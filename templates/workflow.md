@@ -12,18 +12,71 @@ Purpose: This file explains the step-by-step process the AI will follow to auton
 
 This section describes how development plans are created and structured for systematic implementation.
 
-When the user requests to implement the application, I will perform the following steps:
+When the user requests to implement the application or a new feature, I will perform the following steps:
 
-1. Create a directory named `.implementation` in the project root.
-2. Create a file named `plan.json` inside the `.implementation` directory.
-3. The `plan.json` file will contain a JSON object with a single key, `"plan"`, which is an array of step objects.
-4. Each step object in the array will have the following structure:
-    * `step`: A unique integer representing the step number.
-    * `prompt`: A verbose, detailed, and clear instruction for an LLM to accomplish the task for that step.
-    * `status`: The current status of the step (e.g., "pending", "completed", "failed").
-    * `git_hash`: The Git hash of the commit after the step is completed (or `null`).
-    * `summary`: A brief summary of the actions taken in the step (or `null`).
-    * `timestamp`: The ISO 8601 timestamp of when the step was completed (or `null`).
+1. **Create the base directory**:  
+   If it does not already exist, I will create a directory named `.claude/implementation` in the project root.
+
+2. **Determine feature name**:  
+   Generate a concise, lowercase feature shortname (e.g., `auth_tests`, `contacts_api`, `docker_setup`).
+
+3. **Update feature registry**:  
+   I will create or update a file named `features.json` in `.claude/implementation`.  
+   This registry tracks all active features and their current versions.  
+   Example:
+   ```json
+   {
+     "auth_tests": {
+       "shortname": "auth_tests",
+       "description": "Implement comprehensive pytest test suite for authentication endpoints",
+       "created_at": "2025-01-25T10:30:00Z",
+       "updated_at": "2025-01-25T10:30:00Z",
+       "current_version": "v1",
+       "status": "pending"
+     }
+   }
+   ```
+
+4. **Create feature directory**:  
+   For each feature, create a dedicated directory under `.claude/implementation/{feature_shortname}/`.
+
+5. **Determine plan version**:  
+   - If first time: `plan.v1.json`  
+   - If refining an existing plan: increment (e.g., `plan.v2.json`, `plan.v3.json`).
+
+6. **Create the plan file**:  
+   Inside `.claude/implementation/{feature_shortname}/`, create `plan.v{N}.json`.
+
+7. **Define plan structure**:  
+   Each plan file contains both plan metadata and a list of step objects:
+   ```json
+   {
+     "feature": "auth_tests",
+     "version": "v1",
+     "description": "Implement authentication tests",
+     "created_at": "2025-01-25T10:30:00Z",
+     "updated_at": "2025-01-25T10:30:00Z",
+     "status": "pending",
+     "plan": [
+       {
+         "step": 1,
+         "prompt": "Detailed instruction for this step...",
+         "status": "pending",
+         "git_hash": null,
+         "summary": null,
+         "timestamp": null
+       }
+     ]
+   }
+   ```
+
+8. **Preserve history**:  
+   All previous plan versions are retained for reference.  
+   The `features.json` entry will always indicate the current active version.
+
+**Feature naming convention:**  
+Use lowercase words separated by underscores (2–4 words max). Example:  
+`auth_tests`, `docker_setup`, `contacts_api`, `recordings_upload`.
 
 ---
 
@@ -31,30 +84,77 @@ When the user requests to implement the application, I will perform the followin
 
 > This section outlines how the development plan is executed and how progress is tracked throughout the implementation process.
 
-Once the user gives the green light to start the implementation, I will execute all steps in the `plan.json` sequentially and autonomously. I will not ask for permission to proceed between steps.
+Once the user gives the green light to start implementation, I will execute all steps in the feature’s active plan sequentially and autonomously.  
+I will not ask for permission to proceed between steps.
 
-After each step is successfully completed, I will silently update the `plan.json` file by:
-1. Reading the `.implementation/plan.json` file.
-2. Finding the step that was just completed.
-3. Updating the `status` of that step to "completed".
-4. Setting the `summary` field to a brief description of the action I took.
-5. Setting the `timestamp` to the current ISO 8601 time.
-6. If a git commit was made, I will update the `git_hash` with the hash of that commit.
-7. Writing the updated `plan.json` object back to the file.
+### Execution Process
 
-I will only communicate with the user if a step fails or after the entire plan has been successfully completed.
+1. Identify the active plan from `features.json` (e.g., `"auth_tests"` → `plan.v2.json`).  
+2. Set plan and feature status to `"in_progress"`.  
+3. Execute each step in order, updating both the plan file and registry as progress occurs.
+
+After each completed step, I will silently:
+
+1. Update the step’s `status` to `"completed"`.  
+2. Set `summary` and `timestamp`.  
+3. Record the `git_hash` of any commit made.  
+4. Update `updated_at` timestamps for the plan and feature.  
+5. Write the updated data back to disk.
+
+When all steps complete successfully:
+
+1. Update plan and feature `status` to `"completed"`.  
+2. Record final timestamps.  
+3. Communicate a summary of the completed plan to the user.
+
+If a step fails, execution will pause immediately, the status will be updated to `"failed"`, and I will request user guidance before continuing.
 
 ---
 
-## 3. Execution Constraints and Error Handling
+## 3. Managing Multiple Plans
+
+> This section explains how to organize and track multiple active feature plans.
+
+Each feature in `features.json` maintains its own independent plan file and version history.  
+Multiple plans can exist simultaneously, each in different states (`pending`, `in_progress`, `completed`, `failed`).
+
+### Viewing all features
+
+```bash
+cat .claude/implementation/features.json
+```
+
+### Viewing a specific feature’s plans
+
+```bash
+ls -la .claude/implementation/{feature_name}/
+```
+
+### Typical structure
+
+```
+.claude/implementation/
+├── features.json
+├── auth_tests/
+│   ├── plan.v1.json
+│   ├── plan.v2.json
+│   └── plan.v3.json
+└── contacts_api/
+    ├── plan.v1.json
+    └── plan.v2.json
+```
+
+---
+
+## 4. Execution Constraints and Error Handling
 
 > This section defines the boundaries and error handling procedures during plan execution.
 
-If any step fails, I will stop execution, update the status to "failed", and immediately seek guidance from the user before proceeding.
+If any step fails, I will stop execution, update the status to "failed", log the error summary, and immediately seek guidance from the user before proceeding.
 
 ---
 
-## 4. Self-Optimization Routine (Required Default Behavior)
+## 5. Self-Optimization Routine (Required Default Behavior)
 
 > This section describes the mandatory self-improvement process that occurs after every code generation or tool use action.
 
@@ -79,9 +179,11 @@ If the user accepts the recommendation, propose the exact diff or patch to apply
 
 ---
 
-## 5. Code Commit Workflow and Changelog Execution
+## 6. Code Commit Workflow and Changelog Execution
 
 When a step in the plan results in a code change, I will create a git commit.
 
-* **Commit Message Style:** Commit messages should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format (e.g., `feat: add user login button`).
+* **Commit Message Style:** Commit messages should follow the Conventional Commits format:  
+  https://www.conventionalcommits.org/en/v1.0.0/  
+  Example: `feat: add user login button`
 * **Changelog:** After a set of features is complete, I will update the `changelog.md` file.

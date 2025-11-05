@@ -1,8 +1,9 @@
 # Claude Context Blueprint - Task Manager Web App
 
-Purpose: This is the main context file that tells the AI which documents to read and how to resolve conflicting instructions between them.
+Purpose: This is the main context file that tells the AI which documents to read, how to interpret their contents, and how to resolve conflicting instructions between them.  
+It also ensures the AI understands the **feature-based workflow architecture**, where each feature (e.g., authentication, task management, notifications) is tracked and executed independently under `.claude/implementation/` and managed through `features.json`.
 
-> Use this file to provide the master context for the project. This document serves as the central reference point for understanding project requirements, operating instructions, and development plans.
+> Use this file as the central reference point for understanding project requirements, operating instructions, and autonomous development plans.
 
 ---
 
@@ -10,38 +11,68 @@ Purpose: This is the main context file that tells the AI which documents to read
 
 To fully understand the project requirements, my operating instructions, and the development plan, I must read the following files in this directory:
 
-* **`prd.md`**: The Product Requirements Document, which details the features, UI/UX, and technical specifications for the task management web application.
-* **`workflow.md`**: The development workflow, which includes critical interaction instructions for planning tasks and implementing those tasks. This also includes installation instructions and a detailed, step-by-step development process for building the React application.
+* **`prd.md`**: The Product Requirements Document, which details the features, UI/UX, and functional specifications for the task management web application. It also defines feature shortnames (e.g., `auth_flow`, `task_api`, `notifications_ui`) for inclusion in `features.json`.
+* **`workflow.md`**: The development workflow, which outlines autonomous plan creation, feature-based versioning, and sequential implementation of React/Firebase modules. It includes installation steps, plan version control (`plan.v1.json`, `plan.v2.json`), and integration with Git.
 * **`infra.md`**: The infrastructure documentation, which describes the React + Firebase architecture, deployment to Vercel, coding standards, and operational infrastructure requirements.
-* **`security.md`**: The security documentation, which details user authentication, data protection, and security best practices for handling user tasks and personal data.
-* **`sbom.md`**: The Software Bill of Materials, which provides a comprehensive inventory of all React libraries, Firebase services, and dependencies used in the project.
-* **`tests.md`**: The testing documentation, which outlines Jest + React Testing Library strategies, user interaction test cases, and quality assurance procedures for the task management features.
+* **`security.md`**: The security documentation, which defines user authentication, session handling, data protection, and security best practices for handling user tasks and personal information.
+* **`sbom.md`**: The Software Bill of Materials, which provides a complete list of React libraries, Firebase services, and external dependencies used in the project.
+* **`tests.md`**: The testing documentation, which outlines Jest and React Testing Library strategies, component-level test cases, and QA standards for each feature plan.
 
-I will always consult these files to ensure I have the most up-to-date information before proceeding with any task.
+I will always consult these files to ensure I have the most accurate and current project context before performing any planning or implementation action.
+
+---
+
+## Implementation Workspace
+
+This project uses a **multi-feature autonomous workflow system** stored in `.claude/implementation/`.
+
+**Structure:**
+___
+.claude/implementation/
+├── features.json                 # Central registry of all features
+├── auth_flow/                    # Authentication feature
+│   ├── plan.v1.json
+│   └── plan.v2.json
+├── task_management/              # Core task handling feature
+│   ├── plan.v1.json
+│   └── plan.v2.json
+└── notifications_ui/             # Notification and alerts feature
+    ├── plan.v1.json
+    └── plan.v2.json
+___
+
+**Purpose:**
+- Each feature directory contains its own versioned plan defining implementation steps.  
+- The `features.json` registry tracks creation dates, version numbers, and current status (`pending`, `in_progress`, `completed`).  
+- This allows independent planning and deployment of distinct app modules (e.g., task CRUD logic, authentication, notifications).  
 
 ---
 
 ## Changelog Usage
 
-Whenever I am asked about previous commits, or I need to understand previous changes that were made, or I need to create a new commit, I will consult the following file in this directory.
-
-* **`changelog.md`**: The project changelog, which tracks version history, feature additions, bug fixes, and other important updates throughout the development lifecycle.
+* **`changelog.md`**: The project changelog tracks feature releases, version updates, and deployment summaries.  
+  Each completed plan under `.claude/implementation/` must log its result in `changelog.md`, referencing the feature name and plan version (e.g., `feat(auth_flow): complete plan.v2.json`).
 
 ---
 
 ## Conflict Resolution Matrix
 
-When instructions in different context files conflict, you **MUST** follow this order of precedence to resolve conflicts and ensure consistent decision-making.
+When instructions in different context files conflict, you **MUST** follow this order of precedence to ensure stable, safe, and consistent decision-making.
 
-* **Priority 1 - Safety & Supply Chain:** **`security.md`** and **`sbom.md`** (User data protection & approved React libraries) — **Override all other documents.**
-* **Priority 2 - Runtime Environment:** **`infra.md`** (React/Firebase/Vercel architecture) — **Override** feature requests that are incompatible with the tech stack. You must surface these conflicts to the user for guidance.
-* **Priority 3 - Global Conventions:** **`claude.md`** (This file - React coding standards) — Baseline project rules.
-* **Priority 4 - Feature Requirements:** **`prd.md`** (Task management features) — May refine global rules but **must not violate** higher-level constraints. You must surface these conflicts to the user for guidance.
-* **Priority 5 - Process & Workflow:** **`workflow.md`** (Git workflow and component development) — Governs plan creation and execution.
+* **Priority 1 - Safety & Supply Chain:** **`security.md`** and **`sbom.md`** (User data protection & approved React/Firebase dependencies) — **Override all other documents.**
+* **Priority 2 - Runtime Environment:** **`infra.md`** (React/Firebase/Vercel setup) — **Override** feature requests that conflict with architectural constraints.
+* **Priority 3 - Global Conventions:** **`claude.md`** (This file - coding standards, workflow authority, and feature plan governance) — Defines baseline project and feature management rules.
+* **Priority 4 - Feature Requirements:** **`prd.md`** (App features, UI/UX goals, and feature definitions) — May refine rules but **must not violate** higher-level constraints.
+* **Priority 5 - Process & Workflow:** **`workflow.md`** (Plan creation, version management, and testing routines) — Governs plan execution order, error handling, and changelog updates.
+
+---
 
 ### Conflict Resolution Process
 
-If you find a conflict, you **MUST**:
-1. **State the conflict clearly** - Identify the specific conflicting instructions and their sources.
-2. **Follow the precedence rule** - Apply the priority order defined above to resolve the conflict.
-3. **Recommend minimal edits** - Suggest changes to harmonize the sources, starting with the lowest-authority document (`prd.md` or `workflow.md`).
+If a conflict arises, you **MUST**:
+
+1. **State the conflict clearly** — Identify the conflicting instructions and their source files.  
+2. **Apply precedence** — Resolve according to the hierarchy above.  
+3. **Recommend minimal edits** — Suggest the smallest viable change to harmonize instructions, starting with `prd.md` or `workflow.md`.  
+4. **Flag impacted feature plans** — If the conflict affects a specific feature, mark its plan in `features.json` as `needs_review` before resuming execution.  
+5. **Communicate changes** — Log any resulting plan or rule adjustments in `changelog.md` for auditability.

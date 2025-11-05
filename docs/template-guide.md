@@ -12,8 +12,8 @@ The template system creates a **context-driven architecture** where Claude Code 
 claude.md           ← Master control file (READ THIS FIRST)
 ├── prd.md          ← What you're building
 ├── infra.md        ← How it's built
-├── workflow.md     ← How you work
-├── security.md     ← How you stay safe  
+├── workflow.md     ← How you work (and how features execute)
+├── security.md     ← How you stay safe
 ├── sbom.md         ← What you depend on
 ├── tests.md        ← How you ensure quality
 └── changelog.md    ← How you track changes
@@ -28,39 +28,48 @@ claude.md           ← Master control file (READ THIS FIRST)
 **Purpose:** The "brain" of your project that tells Claude Code how to understand and prioritize all other files.
 
 **Key Sections:**
+
 - **Required Context Files** - Lists which templates Claude Code should read
 - **Conflict Resolution Matrix** - Priority system when templates disagree
 - **Global Conventions** - Project-wide rules and standards
 
 **When to Update:**
+
 - When you add/remove template files
 - When you change the priority of different concerns
 - When you establish new global project rules
+- When introducing or updating feature-based workflow logic (`.claude/implementation/`, `features.json`)
 
 **Example Use Case:**
+
 ```markdown
 ## Required Context Files
-* **`prd.md`**: Product requirements for the task management app
-* **`infra.md`**: React + Firebase architecture details
-* **`security.md`**: User data protection requirements
+
+- **`prd.md`**: Product requirements for the task management app
+- **`infra.md`**: React + Firebase architecture details
+- **`security.md`**: User data protection requirements
 ```
 
 ### `prd.md` - Product Requirements Document
 
-**Purpose:** Defines WHAT you're building and WHY, focusing on user experience and business value.
+**Purpose:** Defines WHAT you're building and WHY, focusing on user experience and business value. Also serves as the origin point for defining **feature shortnames** tracked by the workflow system.
 
 **Key Sections:**
+
 - **The Big Picture** - Project name, summary, target users, scope limitations
 - **The Features** - User stories in "As a [user], I want [action] so I can [goal]" format
 - **The Look and Feel** - Visual style, colors, key screens, and UI elements
 
 **When to Update:**
+
 - When adding new features or user stories
 - When changing target audience or scope
 - When updating UI/UX requirements
 - Before starting any new major feature
+- When refining feature shortnames used in `.claude/implementation/`
 
 **Best Practices:**
+
 - Write user stories from the user's perspective, not technical perspective
 - Be specific about what the app will NOT do (scope limitations)
 - Include enough UI detail for Claude Code to make good design decisions
@@ -70,42 +79,51 @@ claude.md           ← Master control file (READ THIS FIRST)
 **Purpose:** Defines HOW your application is built technically - the foundation that everything else builds on.
 
 **Key Sections:**
+
 - **Technology Stack** - Languages, frameworks, databases, tools
-- **Development Environment** - Local setup requirements and procedures  
+- **Development Environment** - Local setup requirements and procedures
 - **Architecture** - System design, data flow, component structure
 - **Deployment** - Hosting, CI/CD, environment management
 
 **When to Update:**
+
 - When changing technologies or frameworks
 - When updating development setup procedures
 - When modifying system architecture
 - When changing deployment or hosting strategies
+- When workflow introduces new environment-related plans or automation
 
 **Best Practices:**
+
 - Be specific about versions (React 18.2, not just "React")
 - Include reasoning for technology choices
 - Document any non-standard setup procedures
 
 ### `workflow.md` - Development Workflow
 
-**Purpose:** Defines HOW you work - your development process, planning methodology, and quality standards.
+**Purpose:** Defines HOW you work - your development process, planning methodology, and quality standards.  
+It also governs **feature-based autonomous implementation** through `.claude/implementation/` and `features.json`.
 
 **Key Sections:**
-- **Planning Process** - How you break down work and create plans
-- **Development Workflow** - Git strategy, branching, commit standards
-- **Quality Assurance** - Code review, testing, deployment checks
-- **Self-Optimization** - How Claude Code should improve its own processes
+
+- **Plan Creation Process** - How `.claude/implementation/` and plan files (`plan.v1.json`, `plan.v2.json`, etc.) are structured
+- **Execution Logic** - How each plan is executed, tracked, and updated
+- **Quality Assurance** - Testing and validation after each feature plan step
+- **Self-Optimization** - How Claude Code improves its own planning or coding behavior
 
 **When to Update:**
+
 - When changing Git workflow or branching strategy
 - When updating code standards or review processes
-- When modifying planning or task breakdown approaches
+- When modifying plan structure, plan versioning, or feature execution rules
 - After retrospectives or process improvements
+- When refining how `features.json` tracks feature states (`pending`, `in_progress`, `completed`)
 
 **Best Practices:**
-- Match your team's actual workflow, not ideal workflow
-- Include specific commit message formats and standards
-- Define clear quality gates and checkpoints
+
+- Keep plan version numbers and status updates consistent
+- Include clear rules for when features transition between states
+- Document changelog automation after plan completion
 
 ---
 
@@ -116,18 +134,21 @@ claude.md           ← Master control file (READ THIS FIRST)
 **Purpose:** Ensures your application is built with security-first principles and proper risk management.
 
 **Key Sections:**
+
 - **Data Sensitivity** - Classification of different types of data
 - **Authentication & Authorization** - User management and access control
 - **Dependencies & Supply Chain** - Third-party security policies
 - **Secrets Management** - How API keys and sensitive data are handled
 
 **When to Update:**
+
 - When handling new types of user data
 - When adding authentication or user management features
 - When integrating new third-party services
 - After security reviews or audits
 
 **Best Practices:**
+
 - Classify data sensitivity levels early
 - Be explicit about what should never be logged or stored
 - Include specific policies for API keys and secrets
@@ -137,18 +158,21 @@ claude.md           ← Master control file (READ THIS FIRST)
 **Purpose:** Manages your project's dependencies, versions, and approved libraries to maintain consistency and security.
 
 **Key Sections:**
+
 - **Approved Stack** - Core technologies with specific versions
 - **Dependencies Policy** - Rules for adding new libraries
 - **Version Management** - Update strategy and compatibility requirements
 - **Documentation Links** - Quick access to official docs and resources
 
 **When to Update:**
+
 - When adding new dependencies or libraries
 - When updating major versions of existing dependencies
 - When changing policies about what types of libraries are acceptable
 - During regular security audits
 
 **Best Practices:**
+
 - Specify exact version numbers and update policies
 - Include reasoning for why specific libraries were chosen
 - Maintain links to security advisories and changelogs
@@ -158,41 +182,49 @@ claude.md           ← Master control file (READ THIS FIRST)
 **Purpose:** Defines your approach to quality assurance, testing frameworks, and coverage goals.
 
 **Key Sections:**
+
 - **Testing Philosophy** - Your approach to different types of testing
 - **Framework Setup** - Tools, configuration, and testing environment
 - **Key Scenarios** - Critical user journeys and edge cases to test
 - **Coverage Goals** - What percentage and types of coverage you aim for
 
 **When to Update:**
+
 - When changing testing frameworks or tools
 - When adding new types of testing (e2e, performance, etc.)
 - When updating coverage requirements or quality standards
-- After discovering new critical test scenarios
+- After major workflow plan updates or when tests integrate with plan steps
 
 **Best Practices:**
+
 - Focus on testing user-critical paths, not just code coverage
 - Include performance and accessibility testing requirements
 - Specify both positive and negative test cases
 
 ### `changelog.md` - Version History
 
-**Purpose:** Tracks project evolution, maintains version history, and provides context for changes over time.
+**Purpose:** Tracks project evolution, maintains version history, and provides context for changes over time.  
+Each completed feature plan should automatically append an entry summarizing the implementation and plan version.
 
 **Key Sections:**
+
 - **Version Format** - Semantic versioning rules and numbering scheme
 - **Change Categories** - How to classify different types of changes
 - **Release Process** - Steps for creating and publishing releases
 - **Historical Entries** - Actual changelog entries for past versions
 
 **When to Update:**
+
 - After every significant change or feature addition
+- After completing a workflow plan or updating a feature’s status
 - Before creating releases or deployments
 - When changing versioning strategy or release process
 - During project retrospectives
 
 **Best Practices:**
+
 - Follow semantic versioning (MAJOR.MINOR.PATCH)
-- Write changelog entries from user perspective
+- Reference feature shortnames and plan versions in changelog entries
 - Include both what changed and why it changed
 
 ---
@@ -204,31 +236,40 @@ claude.md           ← Master control file (READ THIS FIRST)
 When templates contain conflicting information, Claude Code follows this priority order:
 
 1. **Security & Supply Chain** (`security.md`, `sbom.md`) - Safety first
-2. **Runtime Environment** (`infra.md`) - Technical constraints  
+2. **Runtime Environment** (`infra.md`) - Technical constraints
 3. **Global Conventions** (`claude.md`) - Project standards
 4. **Feature Requirements** (`prd.md`) - Business needs
-5. **Process & Workflow** (`workflow.md`) - How you work
+5. **Process & Workflow** (`workflow.md`) - Plan creation, version management, and execution logic
 
 ### Information Flow
 
 ```
-User Request → claude.md (routing) → Relevant templates → Claude Code decision
+User Request → claude.md (routing) → Relevant templates
+  ↓
+workflow.md → Plan creation (`features.json`, `.claude/implementation/{feature}/plan.v*.json`)
+  ↓
+infra.md / security.md → Technical and safety validation
+  ↓
+tests.md / changelog.md → Quality checks and update logs
 ```
 
-Claude Code reads `claude.md` first to understand which other templates are relevant, then consults those templates to understand the full context before taking action.
+Claude Code reads `claude.md` first to understand which other templates are relevant, then consults those templates to assemble the full execution plan.
 
 ### Maintenance Cadence
 
 **Weekly:**
+
 - Review and update `changelog.md` with recent changes
 - Check `workflow.md` for process improvements
 
-**Monthly:**  
+**Monthly:**
+
 - Review `security.md` for new threats or data types
 - Update `sbom.md` with dependency changes and security patches
 
 **Quarterly:**
-- Comprehensive review of `prd.md` for scope and priority changes  
+
+- Comprehensive review of `prd.md` for scope and priority changes
 - Update `infra.md` for architectural evolution
 - Review conflict resolution rules in `claude.md`
 
@@ -239,6 +280,7 @@ Claude Code reads `claude.md` first to understand which other templates are rele
 ### For Web Applications
 
 Focus your templates on:
+
 - User authentication flows in `security.md`
 - Database and API architecture in `infra.md`
 - User journey testing in `tests.md`
@@ -247,14 +289,16 @@ Focus your templates on:
 ### For CLI Tools
 
 Emphasize:
+
 - Input validation and error handling in `security.md`
-- Installation and distribution in `infra.md`  
+- Installation and distribution in `infra.md`
 - Command interface design in `prd.md`
 - Integration testing in `tests.md`
 
 ### For APIs and Services
 
 Prioritize:
+
 - Rate limiting and authentication in `security.md`
 - Scalability and performance in `infra.md`
 - Endpoint documentation in `prd.md`
@@ -267,6 +311,7 @@ Prioritize:
 ### Claude Code isn't following my templates
 
 **Check:**
+
 - Is `claude.md` correctly listing all your template files?
 - Are there conflicts between templates that need resolution?
 - Do templates contain placeholder text instead of actual requirements?
@@ -274,6 +319,7 @@ Prioritize:
 ### Templates seem to contradict each other
 
 **Solution:**
+
 - Use the conflict resolution matrix in `claude.md`
 - Update the lower-priority template to align with higher-priority constraints
 - Add clarifying context to explain why certain decisions were made
@@ -281,6 +327,7 @@ Prioritize:
 ### Templates are too complex/detailed
 
 **Simplify:**
+
 - Start with just `claude.md`, `prd.md`, and `workflow.md`
 - Add other templates as your project grows
 - Focus on the most critical information first
@@ -288,6 +335,7 @@ Prioritize:
 ### Claude Code is making inconsistent decisions
 
 **Fix:**
+
 - Ensure all templates are up to date
 - Add more specific guidance in the relevant template
 - Check that `claude.md` conflict resolution rules are clear

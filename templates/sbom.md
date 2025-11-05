@@ -12,18 +12,18 @@ Purpose: This file lists all the approved technologies, libraries, and dependenc
 
 This section provides a comprehensive view of all approved technologies, frameworks, and libraries that can be used in this project. Each component has been carefully selected for security, performance, and maintainability.
 
-| Category | Component Name | Version | Rationale / Usage |
-| :--- | :--- | :--- | :--- |
-| **Language** | `Python` | `3.11` | *Example: For local data processing scripts.* |
-| **Language** | `TypeScript` | `5.3` | *Example: The primary language for the web app.* |
-| **Runtime** | `Node.js` | `20.x` | *Example: The environment for running the web application.* |
-| **Framework** | `Next.js` | `^14.2.0` | *Example: The core web framework for the app.* |
-| **Database** | `MySQL` | `8.0` | *Example: For storing data on a local machine.* |
-| **Database Client** | `@supabase/supabase-js` | `^2.43.0` | *Example: The primary client for database interactions.* |
-| **Key Library** | `Pillow` | `10.1.0` | *Example: Required for all image manipulation.* |
-| **Key Library** | `zod` | `^3.23.0` | *Example: Required for all server-side data validation.* |
-| **UI Library** | `React` | `18.2.0` | *Example: The core library for building user interfaces.* |
-| **Styling**| `Tailwind CSS` | `3.4` | *Example: The primary utility for all styling.* |
+| Category            | Component Name          | Version   | Rationale / Usage                                           |
+| :------------------ | :---------------------- | :-------- | :---------------------------------------------------------- |
+| **Language**        | `Python`                | `3.11`    | _Example: For local data processing scripts._               |
+| **Language**        | `TypeScript`            | `5.3`     | _Example: The primary language for the web app._            |
+| **Runtime**         | `Node.js`               | `20.x`    | _Example: The environment for running the web application._ |
+| **Framework**       | `Next.js`               | `^14.2.0` | _Example: The core web framework for the app._              |
+| **Database**        | `MySQL`                 | `8.0`     | _Example: For storing data on a local machine._             |
+| **Database Client** | `@supabase/supabase-js` | `^2.43.0` | _Example: The primary client for database interactions._    |
+| **Key Library**     | `Pillow`                | `10.1.0`  | _Example: Required for all image manipulation._             |
+| **Key Library**     | `zod`                   | `^3.23.0` | _Example: Required for all server-side data validation._    |
+| **UI Library**      | `React`                 | `18.2.0`  | _Example: The core library for building user interfaces._   |
+| **Styling**         | `Tailwind CSS`          | `3.4`     | _Example: The primary utility for all styling._             |
 
 ---
 
@@ -31,8 +31,8 @@ This section provides a comprehensive view of all approved technologies, framewo
 
 To keep the project secure and stable, we'll manage updates carefully.
 
-* **Update Strategy:** Dependencies will be updated manually. Before updating a major version (e.g., from `1.x` to `2.x`), we will test the application to ensure nothing breaks.
-* **Security Scanning:** We will periodically run `npm audit` (for Node.js) or a similar command for other languages to check for known security vulnerabilities.
+- **Update Strategy:** Dependencies will be updated manually. Before updating a major version (e.g., from `1.x` to `2.x`), we will test the application to ensure nothing breaks.
+- **Security Scanning:** We will periodically run `npm audit` (for Node.js) or a similar command for other languages to check for known security vulnerabilities.
 
 ---
 
@@ -40,15 +40,16 @@ To keep the project secure and stable, we'll manage updates carefully.
 
 This section provides links to essential documentation and resources for the technologies used in this project.
 
-* **Core Framework Documentation:**
-    * **Tailwind CSS Docs:** https://tailwindcss.com/docs
-    * **React Testing Library Docs:** https://testing-library.com/docs/react-testing-library/intro/
-    * **Next.js Documentation:** https://nextjs.org/docs
-    * **Supabase Documentation:** https://supabase.com/docs
+- **Core Framework Documentation:**
 
-* **Development Tools:**
-    * **TypeScript Handbook:** https://www.typescriptlang.org/docs/
-    * **Node.js Documentation:** https://nodejs.org/docs/
-    * **Python Documentation:** https://docs.python.org/
+  - **Tailwind CSS Docs:** https://tailwindcss.com/docs
+  - **React Testing Library Docs:** https://testing-library.com/docs/react-testing-library/intro/
+  - **Next.js Documentation:** https://nextjs.org/docs
+  - **Supabase Documentation:** https://supabase.com/docs
+
+- **Development Tools:**
+  - **TypeScript Handbook:** https://www.typescriptlang.org/docs/
+  - **Node.js Documentation:** https://nodejs.org/docs/
+  - **Python Documentation:** https://docs.python.org/
 
 <!-- Add More here as needed! -->
