@@ -25,6 +25,7 @@ cp -r templates/* /path/to/your/project/.claude
 
 - **`setup-project.prompt`** - Interactive onboarding to populate all templates
 - **`create-prd.prompt`** - Guided Product Requirements Document creation
+- **`create-command.prompt`** -  Guided custom slash commands creation
 
 ### 📋 Template Files (`/templates/`)
 
@@ -39,8 +40,13 @@ cp -r templates/* /path/to/your/project/.claude
 
 ### 📚 Documentation (`/docs/`)
 
+- **`commands-guide.md`** - Guide to creating custom slash commands
 - **`quick-start.md`** - 5-minute setup guide
 - **`template-guide.md`** - Detailed explanation of each template
+
+### 🔧 Commands (`/commands/`)
+
+- **`story.md`** - slash command to create a new story in your `prd.md`
 
 ### 💡 Examples (`/examples/`)
 
