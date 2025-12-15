@@ -46,7 +46,9 @@ cp -r templates/* /path/to/your/project/.claude
 
 ### 🔧 Commands (`/commands/`)
 
-- **`story.md`** - slash command to create a new story in your `prd.md`
+- **`gogogo.md`** - Session startup command - load context, check git, and prepare for work
+- **`wrapup.md`** - Session wrap-up command - commit changes, update docs, and create handoff
+- **`story.md`** - Slash command to create a new story in your `prd.md`
 
 ### 💡 Examples (`/examples/`)
 

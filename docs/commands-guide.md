@@ -21,6 +21,44 @@ Then add the command to your `.claude/commands/` directory.
 
 ## Available Commands
 
+### `gogogo.md` - Session Startup
+
+**Purpose:** Start a new Claude Code session by loading project context, checking git status, and preparing for work.
+
+**What it does:**
+1. Checks if your dev server is running (and starts it if needed)
+2. Reviews git status and recent commits
+3. Loads all project context files (claude.md, prd.md, workflow.md, infra.md)
+4. Summarizes recent changelog entries and in-progress features
+5. Presents options for what to work on
+
+**Example usage:**
+
+```
+/gogogo
+```
+
+---
+
+### `wrapup.md` - Session Wrap-up
+
+**Purpose:** Cleanly close a Claude Code session by committing changes, updating documentation, and creating a handoff for the next session.
+
+**What it does:**
+1. Commits any uncommitted changes
+2. Updates changelog and feature tracking files
+3. Runs build verification
+4. Provides a session summary (completed, in progress, blockers)
+5. Creates a handoff message for resuming work
+
+**Example usage:**
+
+```
+/wrapup
+```
+
+---
+
 ### `story.md` - Add Feature to PRD
 
 **Purpose:** Conversational tool to add new feature user stories to your existing PRD.
