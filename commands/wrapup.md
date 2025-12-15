@@ -33,3 +33,12 @@ Provide a brief summary including:
 ### 5. Handoff Message
 End with a clear handoff message that can be used to resume work, such as:
 "Ready to resume. Next session: [specific task or feature to continue]"
+
+### 6. Improve Session Startup (Optional)
+Evaluate if anything learned during this session should be added to `.claude/commands/gogogo.md` to help future sessions:
+- New context files that should be loaded at startup
+- Additional checks that would have been helpful
+- Project-specific setup steps discovered during work
+- Environment variables or dependencies that caused issues
+
+If improvements are identified, offer to update the gogogo.md file.
