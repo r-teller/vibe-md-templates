@@ -1,7 +1,7 @@
 # Changelog
 
-Purpose: This file is a running log that tracks all notable changes, new features, and workflow updates for the project over time.  
-It now also serves as a record of **feature-based plan completions** from `.claude/implementation/` and corresponding `features.json` updates.
+Purpose: This file is a running log that tracks all notable changes, new features, and workflow updates for the project over time.
+It also serves as a record of **completed beads issues** and significant workflow milestones.
 
 > The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 > and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -19,23 +19,23 @@ We follow **Semantic Versioning (SemVer)** for all projects:
 > For student or prototype projects:
 >
 > - Use **0.x.x** versions while iterating (pre-1.0).
-> - Bump to **1.0.0** only when the workflow and feature registry (`features.json`) are stable and production-ready.
+> - Bump to **1.0.0** only when the core features are stable and production-ready.
 
 ---
 
-## Plan Logging Rules
+## Issue Completion Logging
 
-Each autonomous feature plan completion must append an entry in this changelog with the following format:
+Significant beads issues should be recorded in the changelog when completed. Use this format:
 
 ---
 
-### Feature Plan Entry Example
+### Issue Completion Entry Example
 
-**Feature:** `auth_flow`  
-**Plan Version:** `plan.v2.json`  
-**Status:** `completed`  
-**Summary:** Implemented secure login and registration flow with Firebase Auth.  
-**Commit Reference:** `feat(auth_flow): complete plan.v2.json`  
+**Issue:** `AES-42`
+**Type:** `feature`
+**Status:** `closed`
+**Summary:** Implemented secure login and registration flow with Firebase Auth.
+**Commit Reference:** `feat: add login flow (Closes: AES-42)`
 **Date:** 2025-10-24
 
 ---
@@ -48,19 +48,19 @@ This ensures transparency and traceability for all AI-executed workflows.
 
 ### Changed
 
-- Integrated `.claude/implementation/` directory into project workflow for autonomous feature planning.
-- Updated `workflow.md` to manage versioned plans (`plan.v1.json`, `plan.v2.json`, etc.) and feature registry (`features.json`).
-- Clarified changelog role in tracking **plan completions** and **feature lifecycle**.
+- Migrated from `.claude/implementation/` and `features.json` to beads (`bd`) for issue tracking.
+- Updated `workflow.md` to use beads CLI commands for planning, execution, and status management.
+- Clarified changelog role in tracking **issue completions** and **workflow milestones**.
 
 ### Added
 
-- Introduced `features.json` for centralized tracking of feature metadata and statuses.
-- Added example feature plan directories under `.claude/implementation/`.
-- Enhanced self-optimization logic and documentation integration in `workflow.md`.
+- Introduced beads (`bd`) for centralized issue tracking with priorities, dependencies, and labels.
+- Added branching strategy and PR workflow documentation to `workflow.md`.
+- Enhanced multi-agent coordination with `--actor` and `--assignee` flags.
 
 ### Deprecated
 
-- Removed references to linear/manual development workflow — now handled by autonomous planning.
+- Removed `.claude/implementation/` directory structure — now handled by beads.
 
 ---
 
@@ -69,15 +69,15 @@ This ensures transparency and traceability for all AI-executed workflows.
 ### Added
 
 - Introduced initial autonomous workflow logic:
-  - `.claude/implementation/` directory structure
-  - Versioned plan files (`plan.v1.json`, etc.)
-  - Feature status management (`pending`, `in_progress`, `completed`)
-- Updated `workflow.md` and `claude.md` to define plan creation and execution behavior.
+  - Beads (`bd`) CLI for issue tracking
+  - Issue types: bug, feature, task, epic, chore
+  - Status management: open, in_progress, blocked, deferred, closed
+- Updated `workflow.md` and `claude.md` to define issue-based planning and execution.
 
 ### Changed
 
 - Revised `tests.md` to support automatic test execution after each feature step.
-- Added changelog integration rules for workflow plan completions.
+- Added changelog integration rules for issue completions.
 
 ---
 

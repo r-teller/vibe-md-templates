@@ -2,18 +2,69 @@
 
 A comprehensive collection of templates and prompts designed to help you get started with Claude Code quickly and effectively. This starter kit provides everything you need to set up AI-assisted software development workflows for any type of project.
 
+## 📦 Dependencies
+
+This starter kit requires the following tools to be installed:
+
+### Claude Code
+
+Claude Code is Anthropic's official CLI for AI-assisted development.
+
+```bash
+# Install Claude Code globally
+npm install -g @anthropic-ai/claude-code
+
+# Verify installation
+claude --version
+```
+
+For more information, see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
+
+### Beads
+
+Beads is a lightweight issue tracking CLI designed for AI-agent workflows. It provides local-first issue management with support for priorities, dependencies, labels, and multi-agent coordination.
+
+```bash
+# Install beads globally
+npm install -g beads-ts
+
+# Verify installation
+bd --version
+
+# Initialize beads in your project
+bd quickstart
+```
+
+For more information, see the [beads GitHub repository](https://github.com/r-teller/beads).
+
+#### Key Beads Commands
+
+| Command | Description |
+|---------|-------------|
+| `bd quickstart` | Initialize beads in a new project |
+| `bd create "title" --type feature` | Create a new issue |
+| `bd list` | List all issues |
+| `bd ready --json` | Get unblocked work as structured data |
+| `bd update <id> --status in_progress` | Update issue status |
+| `bd close <id>` | Close a completed issue |
+| `bd setup claude` | Install Claude Code hooks for automatic context |
+
 ## 🚀 Quick Start
 
 **New to Claude Code?** Start here:
 
-1. **Copy the templates** to your project directory
-2. **Run the setup prompt** to customize templates for your project
-3. **Initialize the feature workspace** — Claude Code will create a `.claude/implementation/` directory and `features.json` registry for plan tracking
-4. **Start building** with Claude Code using your populated templates
+1. **Install dependencies** — Ensure Claude Code and beads are installed (see [Dependencies](#-dependencies))
+2. **Copy the templates** to your project directory
+3. **Run the setup prompt** to customize templates for your project
+4. **Initialize beads** — Run `bd quickstart` to set up issue tracking for your project
+5. **Start building** with Claude Code using your populated templates
 
 ```bash
 # Copy templates to your project
-cp -r templates/* /path/to/your/project/.claude
+cp -r templates/*.md /path/to/your/project/.claude
+
+# Initialize beads for issue tracking
+bd quickstart
 
 # Use the interactive setup prompt
 # Copy and paste the content of prompts/setup-project.prompt into Claude Code
@@ -32,7 +83,7 @@ cp -r templates/* /path/to/your/project/.claude
 - **`claude.md`** - Master context file with conflict resolution rules
 - **`prd.md`** - Product Requirements Document template
 - **`infra.md`** - Infrastructure and technical architecture
-- **`workflow.md`** - Defines development workflow, including autonomous feature planning, versioned execution, and tracking via `.claude/implementation/`
+- **`workflow.md`** - Defines development workflow, including beads-based issue tracking, branching strategy, and PR workflows
 - **`security.md`** - Security requirements and best practices
 - **`sbom.md`** - Software Bill of Materials
 - **`tests.md`** - Testing strategy and frameworks
@@ -80,7 +131,7 @@ cp templates/* /your/project/directory/.claude
 These templates work together as a **context system** for Claude Code:
 
 - **`claude.md`** acts as the master file that tells Claude Code which other files to read
-- **`workflow.md`** manages feature-based plan creation, stored under `.claude/implementation/`, and tracks progress in `features.json`
+- **`workflow.md`** manages issue-based planning with beads (`bd`), tracking work through priorities, dependencies, and status updates
 - Each template serves a specific purpose in defining your project
 - The conflict resolution system ensures consistent decision-making
 
@@ -89,8 +140,8 @@ These templates work together as a **context system** for Claude Code:
 Once your templates are populated, Claude Code will use them to:
 
 - Understand your project requirements
-- Register features in `features.json`
-- Autonomously execute versioned implementation plans under `.claude/implementation/{feature}/`
+- Create and track issues with beads (`bd create`, `bd update`, `bd close`)
+- Autonomously execute work items with full dependency and priority management
 - Follow your preferred coding standards
 - Maintain security and quality standards
 
@@ -118,10 +169,10 @@ Once your templates are populated, Claude Code will use them to:
 
 **`workflow.md`** - How you work
 
-- Defines how plans are created and executed
-- Manages autonomous feature implementation in `.claude/implementation/{feature}/plan.v*.json`
-- Tracks all features in `features.json`
-- Outlines error handling, self-optimization, and changelog integration
+- Defines issue creation and execution with beads (`bd`)
+- Manages work tracking with priorities, dependencies, and labels
+- Includes branching strategy and PR workflow with beads references
+- Outlines error handling, self-optimization, and multi-agent coordination
 
 ### Supporting Templates (Recommended)
 
@@ -164,7 +215,7 @@ Once your templates are populated, Claude Code will use them to:
 - Keep `prd.md` focused on command-line interface design
 - Use `infra.md` for distribution and installation
 - Focus on input validation in `security.md`
-- Each command or module can be represented as its own feature plan in `.claude/implementation/`
+- Each command or module can be tracked as separate beads issues with `--parent` for hierarchy
 
 **APIs and Services**
 
@@ -177,20 +228,20 @@ Once your templates are populated, Claude Code will use them to:
 **Small Projects**
 
 - Start with just `claude.md`, `prd.md`, and `workflow.md`
-- Use the setup prompt to create your first feature plan (e.g., `core_api` or `auth_flow`)
-- Additional features can be added later via new entries in `features.json`
+- Run `bd quickstart` and create your first issues (e.g., `bd create "Implement core API" --type feature`)
+- Additional work items can be added anytime with `bd create`
 
 **Large Projects**
 
 - Fully populate all templates from the start
-- Create multiple feature plans under `.claude/implementation/`
-- Use versioning (`plan.v1.json`, `plan.v2.json`, etc.) to refine implementation
+- Create epics with child issues using `bd create --parent` for hierarchy
+- Use labels and priorities to organize work across multiple features
 
 **Team Projects**
 
-- Assign features to contributors via `features.json`
-- Treat plan files as self-contained development roadmaps
-- Regularly review and merge feature progress through `workflow.md`
+- Assign work to contributors with `bd update --assignee`
+- Use `--actor` flags for multi-agent coordination and audit trails
+- Track progress with `bd list --assignee` and `bd ready`
 
 ## 🤝 Contributing
 

@@ -33,8 +33,11 @@ Read and internalize the full project context:
 
 **Status Files (summarize for user):**
 - `.claude/changelog.md` - Summarize the most recent entries (what was completed recently)
-- `.claude/implementation/features.json` - List any features with status "in_progress" or "pending"
-- Check for any `plan.v*.json` files in `.claude/implementation/*/` directories that have steps with status "in_progress"
+
+**Beads Issue Tracking:**
+- Run `bd list` to see all tracked issues
+- Run `bd ready` to identify available work
+- Note any issues with status "in_progress" that may need continuation
 
 ### 4. Environment Check
 - Verify environment files exist (e.g., `.env.local`, `.env`)
@@ -45,10 +48,10 @@ After gathering context, ask the user:
 
 "Session ready! Here's what I found:
 - **Recent work:** [Summary from changelog]
-- **In progress:** [Any in-progress features from features.json]
-- **Pending steps:** [Any incomplete plan steps]
+- **In progress:** [Any in-progress issues from `bd list`]
+- **Ready to start:** [Available issues from `bd ready`]
 
 What would you like to work on?
-1. Continue: [in-progress feature name if any]
-2. Next up: [next pending feature from features.json by priority]
+1. Continue: [in-progress issue if any]
+2. Next up: [top issue from `bd ready`]
 3. Something else - describe what you'd like to do"

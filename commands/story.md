@@ -26,7 +26,7 @@ You must:
 
 - The user already has a `.claude/prd.md` generated using the original PRD template
 - Your job is to **extend** it with additional stories
-- Each added feature will later be implemented using the workflow defined in `.claude/implementation/{feature}/plan.v1.json` or `./implementation/{feature}/plan.v1.json`
+- Each added feature will later be tracked as a beads issue via `bd create "<feature title>"`
 - Keep the focus on functional purpose—not technical implementation
 - If the user's idea is vague, help them refine it with gentle questions
 
@@ -55,7 +55,11 @@ Each new story should follow this format:
 1. Start by reading `.claude/prd.md` to see the existing structure
 2. Have a conversational back-and-forth with the user to understand their new feature(s)
 3. Once you have enough information, generate the new user stories
-4. Use the `str_replace` tool to append the new stories to the end of the `## 2. The Features` section in `.claude/prd.md`
+4. Append the new stories to the end of the `## 2. The Features` section in `.claude/prd.md`
 5. Confirm with the user that the stories have been added successfully
+6. Ask if they want to create a beads issue for the new feature:
+   ```bash
+   bd create "Implement <feature_name>" --type feature
+   ```
 
 Remember: You're updating the file directly—no manual copy-paste needed!

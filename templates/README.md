@@ -10,7 +10,7 @@ This repository contains a set of interconnected Markdown templates that serve a
 - **Enable autonomous AI development** by providing clear context and constraints
 - **Facilitate consistent project setup** for students and indie developers
 - **Support both local and cloud-based applications** with appropriate templates
-- **Integrate feature-based planning and execution** through `.claude/implementation/` and `features.json`
+- **Integrate issue-based planning and execution** through beads (`bd`) workflow tracking
 
 ## 📁 Template Structure
 
@@ -33,7 +33,7 @@ Each template serves a specific purpose in the development workflow:
 1. **Clone or download** this repository
 2. **Copy the templates** to your new project directory
 3. **Run the interactive setup** by following the `first_prompt.md` guide
-4. **Initialize feature workspace** — Claude Code will create `.claude/implementation/` and `features.json` for tracking
+4. **Initialize beads** — Run `bd quickstart` to set up issue tracking for the project
 5. **Customize each template** with your project-specific information
 6. **Use with your AI assistant** to build and manage features
 
@@ -48,8 +48,8 @@ cd my-awesome-app
 cp /path/to/vibe-md-templates/*.md .
 
 # Follow the first_prompt.md guide to populate the templates
-# The setup will initialize `.claude/implementation/` and `features.json`
-# Then use with your AI assistant to build and manage feature plans
+# Run `bd quickstart` to initialize beads issue tracking
+# Then use with your AI assistant to build and manage work items
 ```
 
 ## 🎨 Template Features
@@ -58,13 +58,13 @@ cp /path/to/vibe-md-templates/*.md .
 
 The templates include a sophisticated conflict resolution matrix that ensures AI assistants make consistent decisions when different documentation sources conflict.
 
-### Feature-Based Planning
+### Issue-Based Planning with Beads
 
-The new workflow supports multiple autonomous feature plans:
+The workflow uses beads (`bd`) for issue tracking and work management:
 
-- Each feature has its own plan file (`plan.v1.json`, `plan.v2.json`, etc.)
-- Plans are stored under `.claude/implementation/{feature}/`
-- All active features are tracked in `features.json`
+- Create fine-grained issues with `bd create "Task description" --type feature`
+- Track dependencies, priorities, and labels across issues
+- View ready work with `bd ready --json` and manage status with `bd update`
 
 ### Technology Agnostic
 
@@ -100,7 +100,7 @@ Built-in security considerations and best practices for:
 - Feature specifications
 - UI/UX requirements
 - Scope limitations
-- Identifies initial feature shortnames to be tracked in `features.json`
+- Identifies initial features to be tracked as beads issues
 
 **`infra.md`** - Infrastructure documentation covering:
 
@@ -111,12 +111,12 @@ Built-in security considerations and best practices for:
 
 **`workflow.md`** - Development process that defines:
 
-- Plan creation and execution
-- Feature-based implementation tracking in `.claude/implementation/{feature}/`
-- Versioned plan management via `plan.v*.json` files
-- Git commit workflows
+- Issue creation and execution with beads (`bd`)
+- Work tracking with priorities, dependencies, and labels
+- Branching strategy and PR workflows
+- Git commit workflows with issue references
 - Self-optimization routines
-- Error handling and recovery procedures
+- Multi-agent coordination
 
 ### Supporting Templates (Recommended)
 
@@ -155,7 +155,7 @@ Each template includes:
 - **Example content** for common scenarios
 - **Guided questions** to help populate fields
 - **Best practice recommendations**
-- **Integration-ready structure** for autonomous workflow plans
+- **Integration-ready structure** for beads-based workflow tracking
 
 ## 🤝 Contributing
 
@@ -173,7 +173,7 @@ We welcome contributions! Please:
 - Improved conflict resolution rules
 - Additional security best practices
 - Testing strategy enhancements
-- Enhancements for feature-based planning and workflow automation
+- Enhancements for beads-based planning and workflow automation
 
 ## 📄 License
 
@@ -184,7 +184,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by the need for consistent AI-assisted development workflows
 - Built for the developer community to streamline project setup
 - Designed to work with various AI assistants and development tools
-- Updated to support multi-feature planning, version tracking, and autonomous execution
+- Updated to support beads-based issue tracking and autonomous execution
 
 ## 📞 Support
 
