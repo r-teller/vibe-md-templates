@@ -1,277 +1,266 @@
 # Claude Code Starter Kit
 
-A comprehensive collection of templates and prompts designed to help you get started with Claude Code quickly and effectively. This starter kit provides everything you need to set up AI-assisted software development workflows for any type of project.
+**Get productive with Claude Code in minutes.** This starter kit gives you ready-to-use templates that help Claude Code understand your project and work more effectively.
 
-## 📦 Dependencies
+## What This Does
 
-This starter kit requires the following tools to be installed:
+When you use Claude Code, it works best when it understands your project's context—what you're building, how you want to work, and what standards to follow. This kit provides:
 
-### Claude Code
+- **Templates** that teach Claude Code about your project
+- **Slash commands** for common workflows (start session, wrap up, create stories)
+- **Issue tracking** via [Beads](https://github.com/steveyegge/beads) to manage work items
 
-Claude Code is Anthropic's official CLI for AI-assisted development.
+**Before:** You explain your project context every session.
+**After:** Claude Code reads your templates and already knows how to help.
+
+---
+
+## Quick Start
+
+### Step 1: Install the Tools
+
+**Claude Code** (pick one method):
 
 ```bash
-# Install Claude Code globally
+# Option A: Native binary (recommended)
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Option B: npm
 npm install -g @anthropic-ai/claude-code
-
-# Verify installation
-claude --version
 ```
 
-For more information, see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
-
-### Beads
-
-Beads is a lightweight issue tracking CLI designed for AI-agent workflows. It provides local-first issue management with support for priorities, dependencies, labels, and multi-agent coordination.
+**Beads** (issue tracking):
 
 ```bash
-# Install beads globally
 npm install -g beads-ts
-
-# Verify installation
-bd --version
-
-# Initialize beads in your project
-bd quickstart
 ```
 
-For more information, see the [beads GitHub repository](https://github.com/r-teller/beads).
+Verify both are installed:
 
-#### Key Beads Commands
+```bash
+claude --version
+bd --version
+```
+
+### Step 2: Set Up Your Project
+
+```bash
+# 1. Create a .claude folder in your project
+mkdir -p /path/to/your/project/.claude
+
+# 2. Copy the templates
+cp templates/*.md /path/to/your/project/.claude/
+
+# 3. Initialize beads for issue tracking
+cd /path/to/your/project
+bd quickstart
+
+# 4. (Optional) Set up Claude Code hooks for automatic context
+bd setup claude
+```
+
+### Step 3: Customize Your Templates
+
+Open Claude Code in your project and paste the setup prompt:
+
+```bash
+cd /path/to/your/project
+claude
+
+# Then paste the contents of prompts/setup-project.prompt
+```
+
+Claude Code will walk you through customizing each template for your project.
+
+---
+
+## What's in the Kit
+
+```
+├── templates/          # Core context files for Claude Code
+│   ├── claude.md       # Master file - tells Claude which files to read
+│   ├── prd.md          # Product requirements (what you're building)
+│   ├── workflow.md     # How you work (branching, PRs, issue tracking)
+│   ├── infra.md        # Tech stack and architecture
+│   ├── security.md     # Security requirements
+│   ├── tests.md        # Testing strategy
+│   ├── sbom.md         # Approved dependencies
+│   └── changelog.md    # Version history
+│
+├── commands/           # Slash commands for Claude Code
+│   ├── gogogo.md       # /gogogo - Start a work session
+│   ├── wrapup.md       # /wrapup - End session, commit, sync
+│   └── story.md        # /story - Create a new user story
+│
+├── prompts/            # Interactive setup helpers
+│   ├── setup-project.prompt    # Full project setup wizard
+│   ├── create-prd.prompt       # PRD creation helper
+│   └── create-command.prompt   # Custom command creator
+│
+├── docs/               # Detailed guides
+└── examples/           # Sample project setups
+    ├── web-app-example/
+    └── cli-tool-example/
+```
+
+---
+
+## How It Works
+
+### The Template System
+
+Your `.claude/` folder contains markdown files that Claude Code reads for context:
+
+| File | Purpose |
+|------|---------|
+| `claude.md` | **Control center** - Lists which files Claude should read and in what priority |
+| `prd.md` | **What you're building** - Features, user stories, requirements |
+| `workflow.md` | **How you work** - Git workflow, PR process, issue tracking with beads |
+| `infra.md` | **Tech decisions** - Stack, architecture, deployment |
+
+When you start Claude Code, it reads these files and understands your project without you having to explain it.
+
+### Issue Tracking with Beads
+
+Beads is a lightweight CLI for tracking work items. It integrates with your git workflow:
+
+```bash
+# Create an issue
+bd create "Add user login" --type feature
+
+# See what's ready to work on
+bd ready
+
+# Start working on something
+bd update ABC-1 --status in_progress
+
+# Mark it done
+bd close ABC-1
+```
+
+The `/gogogo` and `/wrapup` slash commands automatically check and update beads status.
+
+### Slash Commands
+
+After setup, use these commands in Claude Code:
+
+| Command | What it does |
+|---------|--------------|
+| `/gogogo` | Loads context, checks git status, shows ready work items |
+| `/wrapup` | Commits changes, updates beads, creates handoff notes |
+| `/story` | Creates a new user story in your PRD |
+
+---
+
+## Getting Started by Project Size
+
+### Small Projects
+
+Start minimal—you can always add more later:
+
+1. Copy just `claude.md`, `prd.md`, and `workflow.md`
+2. Run `bd quickstart`
+3. Create your first issue: `bd create "Build MVP" --type feature`
+
+### Larger Projects
+
+Use all templates from the start:
+
+1. Copy all templates to `.claude/`
+2. Run through the full `setup-project.prompt`
+3. Create an epic with child issues:
+   ```bash
+   bd create "User Authentication" --type epic
+   bd create "Login endpoint" --type feature --parent AUTH-1
+   bd create "Password reset" --type feature --parent AUTH-1
+   ```
+
+### Team Projects
+
+Add coordination features:
+
+```bash
+# Assign work
+bd update ABC-1 --assignee "alice"
+
+# Track who did what (for multi-agent setups)
+bd update ABC-1 --status in_progress --actor "claude-1"
+```
+
+---
+
+## Common Beads Commands
 
 | Command | Description |
 |---------|-------------|
-| `bd quickstart` | Initialize beads in a new project |
-| `bd create "title" --type feature` | Create a new issue |
-| `bd list` | List all issues |
-| `bd ready --json` | Get unblocked work as structured data |
-| `bd update <id> --status in_progress` | Update issue status |
-| `bd close <id>` | Close a completed issue |
-| `bd setup claude` | Install Claude Code hooks for automatic context |
+| `bd quickstart` | Initialize beads in your project |
+| `bd create "title" --type feature` | Create an issue (types: bug, feature, task, epic, chore) |
+| `bd list` | Show all issues |
+| `bd ready` | Show issues ready to work on (no blockers) |
+| `bd update <id> --status in_progress` | Start working on an issue |
+| `bd close <id>` | Mark an issue complete |
+| `bd show <id>` | View issue details |
 
-## 🚀 Quick Start
+See the [Beads documentation](https://github.com/steveyegge/beads) for the full command reference.
 
-**New to Claude Code?** Start here:
+---
 
-1. **Install dependencies** — Ensure Claude Code and beads are installed (see [Dependencies](#-dependencies))
-2. **Copy the templates** to your project directory
-3. **Run the setup prompt** to customize templates for your project
-4. **Initialize beads** — Run `bd quickstart` to set up issue tracking for your project
-5. **Start building** with Claude Code using your populated templates
+## Customization Tips
 
-```bash
-# Copy templates to your project
-cp -r templates/*.md /path/to/your/project/.claude
-
-# Initialize beads for issue tracking
-bd quickstart
-
-# Use the interactive setup prompt
-# Copy and paste the content of prompts/setup-project.prompt into Claude Code
-```
-
-## 📁 What's Included
-
-### 🎯 Interactive Prompts (`/prompts/`)
-
-- **`setup-project.prompt`** - Interactive onboarding to populate all templates
-- **`create-prd.prompt`** - Guided Product Requirements Document creation
-- **`create-command.prompt`** -  Guided custom slash commands creation
-
-### 📋 Template Files (`/templates/`)
-
-- **`claude.md`** - Master context file with conflict resolution rules
-- **`prd.md`** - Product Requirements Document template
-- **`infra.md`** - Infrastructure and technical architecture
-- **`workflow.md`** - Defines development workflow, including beads-based issue tracking, branching strategy, and PR workflows
-- **`security.md`** - Security requirements and best practices
-- **`sbom.md`** - Software Bill of Materials
-- **`tests.md`** - Testing strategy and frameworks
-- **`changelog.md`** - Version tracking and change history
-
-### 📚 Documentation (`/docs/`)
-
-- **`commands-guide.md`** - Guide to creating custom slash commands
-- **`quick-start.md`** - 5-minute setup guide
-- **`template-guide.md`** - Detailed explanation of each template
-
-### 🔧 Commands (`/commands/`)
-
-- **`gogogo.md`** - Session startup command - load context, check git, and prepare for work
-- **`wrapup.md`** - Session wrap-up command - commit changes, update docs, and create handoff
-- **`story.md`** - Slash command to create a new story in your `prd.md`
-
-### 💡 Examples (`/examples/`)
-
-- **`web-app-example/`** - Complete web application project setup
-- **`cli-tool-example/`** - Command-line tool project setup
-
-## 🎯 How It Works
-
-### 1. Choose Your Approach
-
-**🤖 Guided Setup (Recommended for beginners)**  
-Use the interactive prompts to have Claude Code walk you through the entire setup process:
-
-```bash
-# Copy the setup prompt content and paste into Claude Code
-cat prompts/setup-project.prompt
-```
-
-**⚡ Manual Setup (For experienced users)**  
-Copy the templates directly and customize them yourself:
-
-```bash
-# Copy all templates to your project
-cp templates/* /your/project/directory/.claude
-```
-
-### 2. Template System
-
-These templates work together as a **context system** for Claude Code:
-
-- **`claude.md`** acts as the master file that tells Claude Code which other files to read
-- **`workflow.md`** manages issue-based planning with beads (`bd`), tracking work through priorities, dependencies, and status updates
-- Each template serves a specific purpose in defining your project
-- The conflict resolution system ensures consistent decision-making
-
-### 3. Start Building
-
-Once your templates are populated, Claude Code will use them to:
-
-- Understand your project requirements
-- Create and track issues with beads (`bd create`, `bd update`, `bd close`)
-- Autonomously execute work items with full dependency and priority management
-- Follow your preferred coding standards
-- Maintain security and quality standards
-
-## 📖 Template Guide
-
-### Core Templates (Required)
-
-**`claude.md`** - The control center
-
-- Lists all context files Claude Code should read
-- Defines priority order for conflicting instructions
-- Sets global project conventions
-
-**`prd.md`** - Your project blueprint
-
-- Project goals and target users
-- Feature specifications as user stories
-- UI/UX requirements and design guidelines
-
-**`infra.md`** - Technical foundation
-
-- Technology stack and framework choices
-- Development environment setup
-- Deployment and hosting architecture
-
-**`workflow.md`** - How you work
-
-- Defines issue creation and execution with beads (`bd`)
-- Manages work tracking with priorities, dependencies, and labels
-- Includes branching strategy and PR workflow with beads references
-- Outlines error handling, self-optimization, and multi-agent coordination
-
-### Supporting Templates (Recommended)
-
-**`security.md`** - Keep it safe
-
-- Data sensitivity classification
-- Authentication and authorization
-- Secrets management and best practices
-
-**`sbom.md`** - Dependency management
-
-- Approved libraries and versions
-- Update policies and security scanning
-- License compatibility tracking
-
-**`tests.md`** - Quality assurance
-
-- Testing philosophy and strategy
-- Framework selection and setup
-- Key test scenarios and coverage goals
-
-**`changelog.md`** - Track your progress
-
-- Version numbering strategy
-- Change categorization system
-- Release notes formatting
-
-## 🛠️ Customization Tips
-
-### For Different Project Types
-
-**Web Applications**
-
+### For Web Apps
 - Focus on `prd.md` for user experience details
-- Use `infra.md` for deployment and scaling concerns
-- Emphasize security in `security.md` for user data protection
+- Use `security.md` for authentication and data protection
+- Detail deployment in `infra.md`
 
-**CLI Tools**
+### For CLI Tools
+- Keep `prd.md` focused on command design
+- Track each command as a beads issue with `--parent` for hierarchy
+- Focus `security.md` on input validation
 
-- Keep `prd.md` focused on command-line interface design
-- Use `infra.md` for distribution and installation
-- Focus on input validation in `security.md`
-- Each command or module can be tracked as separate beads issues with `--parent` for hierarchy
+### For APIs
+- Document endpoints in `prd.md`
+- Emphasize rate limiting and auth in `security.md`
+- Detail scaling requirements in `infra.md`
 
-**APIs and Services**
+---
 
-- Detail endpoints and data models in `prd.md`
-- Use `infra.md` for scalability and performance requirements
-- Emphasize authentication and rate limiting in `security.md`
+## Troubleshooting
 
-### Adaptation Strategies
+**Claude Code doesn't seem to read my templates**
+- Make sure templates are in `.claude/` folder (not `.claude/templates/`)
+- Check that `claude.md` lists the other files correctly
 
-**Small Projects**
+**Beads commands not working**
+- Verify installation: `bd --version`
+- Make sure you ran `bd quickstart` in your project folder
+- Check that `.beads/` folder exists in your project
 
-- Start with just `claude.md`, `prd.md`, and `workflow.md`
-- Run `bd quickstart` and create your first issues (e.g., `bd create "Implement core API" --type feature`)
-- Additional work items can be added anytime with `bd create`
+**Slash commands not found**
+- Copy command files to `.claude/commands/` in your project
+- Restart Claude Code after adding commands
 
-**Large Projects**
+---
 
-- Fully populate all templates from the start
-- Create epics with child issues using `bd create --parent` for hierarchy
-- Use labels and priorities to organize work across multiple features
+## Contributing
 
-**Team Projects**
-
-- Assign work to contributors with `bd update --assignee`
-- Use `--actor` flags for multi-agent coordination and audit trails
-- Track progress with `bd list --assignee` and `bd ready`
-
-## 🤝 Contributing
-
-We welcome improvements and additions! Please:
+We welcome improvements! To contribute:
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
 
-### Ideas for Contributions
-
-- Additional template variants for specific frameworks
-- More example projects and use cases
-- Improved prompts and user guidance
-- Better conflict resolution rules
-
-## 📄 License
-
-MIT License - feel free to use, modify, and distribute.
-
-## 💬 Support
-
-- Check the `/docs/` folder for detailed guides
-- Review the `/examples/` for inspiration
-- Open an issue for bugs or feature requests
-- Start a discussion for questions or ideas
+Ideas: More example projects, framework-specific templates, improved prompts.
 
 ---
 
-**Ready to start building with Claude Code?** 🚀
+## Resources
 
-Copy the templates, run through the setup prompts, and start creating amazing software with AI assistance that truly understands your project!
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- [Beads Issue Tracker](https://github.com/steveyegge/beads)
+- [Examples](/examples) - Sample project setups
+- [Detailed Guides](/docs) - In-depth documentation
+
+## License
+
+MIT License - free to use, modify, and distribute.
