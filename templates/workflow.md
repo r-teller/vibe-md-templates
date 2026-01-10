@@ -1,189 +1,503 @@
 # Development Workflow Blueprint
 
-Purpose: This file explains the step-by-step process the AI will follow to autonomously build and implement the project features.
-
-> Use this file to outline the development workflow and execution process for your project. This guide ensures consistent implementation practices and helps your AI assistant understand how to systematically build and maintain your application.
-
-<!-- Don’t worry if this feels advanced. The AI handles most of this automatically.-->
+Purpose: This file explains the step-by-step process the AI will follow to autonomously build and implement project features using **beads** (`bd`) for workflow tracking.
 
 ---
 
-## 1. Plan Creation Process
+## 1. Session Startup
 
-This section describes how development plans are created and structured for systematic implementation.
-
-When the user requests to implement the application or a new feature, I will perform the following steps:
-
-1. **Create the base directory**:  
-   If it does not already exist, I will create a directory named `.claude/implementation` in the project root.
-
-2. **Determine feature name**:  
-   Generate a concise, lowercase feature shortname (e.g., `auth_tests`, `contacts_api`, `docker_setup`).
-
-3. **Update feature registry**:  
-   I will create or update a file named `features.json` in `.claude/implementation`.  
-   This registry tracks all active features and their current versions.  
-   Example:
-   ```json
-   {
-     "auth_tests": {
-       "shortname": "auth_tests",
-       "description": "Implement comprehensive pytest test suite for authentication endpoints",
-       "created_at": "2025-01-25T10:30:00Z",
-       "updated_at": "2025-01-25T10:30:00Z",
-       "current_version": "v1",
-       "status": "pending"
-     }
-   }
-   ```
-
-4. **Create feature directory**:  
-   For each feature, create a dedicated directory under `.claude/implementation/{feature_shortname}/`.
-
-5. **Determine plan version**:  
-   - If first time: `plan.v1.json`  
-   - If refining an existing plan: increment (e.g., `plan.v2.json`, `plan.v3.json`).
-
-6. **Create the plan file**:  
-   Inside `.claude/implementation/{feature_shortname}/`, create `plan.v{N}.json`.
-
-7. **Define plan structure**:  
-   Each plan file contains both plan metadata and a list of step objects:
-   ```json
-   {
-     "feature": "auth_tests",
-     "version": "v1",
-     "description": "Implement authentication tests",
-     "created_at": "2025-01-25T10:30:00Z",
-     "updated_at": "2025-01-25T10:30:00Z",
-     "status": "pending",
-     "plan": [
-       {
-         "step": 1,
-         "prompt": "Detailed instruction for this step...",
-         "status": "pending",
-         "git_hash": null,
-         "summary": null,
-         "timestamp": null
-       }
-     ]
-   }
-   ```
-
-8. **Preserve history**:  
-   All previous plan versions are retained for reference.  
-   The `features.json` entry will always indicate the current active version.
-
-**Feature naming convention:**  
-Use lowercase words separated by underscores (2–4 words max). Example:  
-`auth_tests`, `docker_setup`, `contacts_api`, `recordings_upload`.
-
----
-
-## 2. Plan Execution and Updates
-
-> This section outlines how the development plan is executed and how progress is tracked throughout the implementation process.
-
-Once the user gives the green light to start implementation, I will execute all steps in the feature’s active plan sequentially and autonomously.  
-I will not ask for permission to proceed between steps.
-
-### Execution Process
-
-1. Identify the active plan from `features.json` (e.g., `"auth_tests"` → `plan.v2.json`).  
-2. Set plan and feature status to `"in_progress"`.  
-3. Execute each step in order, updating both the plan file and registry as progress occurs.
-
-After each completed step, I will silently:
-
-1. Update the step’s `status` to `"completed"`.  
-2. Set `summary` and `timestamp`.  
-3. Record the `git_hash` of any commit made.  
-4. Update `updated_at` timestamps for the plan and feature.  
-5. Write the updated data back to disk.
-
-When all steps complete successfully:
-
-1. Update plan and feature `status` to `"completed"`.  
-2. Record final timestamps.  
-3. Communicate a summary of the completed plan to the user.
-
-If a step fails, execution will pause immediately, the status will be updated to `"failed"`, and I will request user guidance before continuing.
-
----
-
-## 3. Managing Multiple Plans
-
-> This section explains how to organize and track multiple active feature plans.
-
-Each feature in `features.json` maintains its own independent plan file and version history.  
-Multiple plans can exist simultaneously, each in different states (`pending`, `in_progress`, `completed`, `failed`).
-
-### Viewing all features
+On session start, orient yourself with the current work state:
 
 ```bash
-cat .claude/implementation/features.json
+bd quickstart            # Onboard to beads (first time)
+bd ready --json          # Get unblocked work as structured data
+bd list --status open    # See all open issues
+bd stale --days 7        # Find neglected issues
 ```
 
-### Viewing a specific feature’s plans
+Review the output to understand:
+- What work is ready to be claimed
+- What's currently in progress (may need continuation)
+- Any blockers or dependencies
+
+### First-Time Setup (Optional)
+
+Install Claude Code hooks for automatic context refresh:
 
 ```bash
-ls -la .claude/implementation/{feature_name}/
-```
-
-### Typical structure
-
-```
-.claude/implementation/
-├── features.json
-├── auth_tests/
-│   ├── plan.v1.json
-│   ├── plan.v2.json
-│   └── plan.v3.json
-└── contacts_api/
-    ├── plan.v1.json
-    └── plan.v2.json
+bd setup claude          # Global installation
+bd setup claude --project  # Project-only
+bd setup claude --check  # Verify status
 ```
 
 ---
 
-## 4. Execution Constraints and Error Handling
+## 2. Planning with Beads
 
-> This section defines the boundaries and error handling procedures during plan execution.
+When the user requests implementation of a feature or set of changes:
 
-If any step fails, I will stop execution, update the status to "failed", log the error summary, and immediately seek guidance from the user before proceeding.
+### Break Work into Issues
+
+Create **fine-grained** issues for each discrete piece of work. Smaller issues = better agent decisions and cheaper sessions.
+
+```bash
+bd create "Implement auth endpoint" --type feature
+bd create "Add auth tests" --type task
+bd create "Update API docs for auth" --type chore
+bd create "Fix login crash" --type bug -p 0
+```
+
+### Issue Types
+
+| Type | Use For |
+|------|---------|
+| `bug` | Defects, errors, crashes |
+| `feature` | New functionality |
+| `task` | General work items |
+| `epic` | Large initiatives (parent of multiple issues) |
+| `chore` | Maintenance, docs, cleanup |
+
+### Priority Levels
+
+Set priority with `-p` flag (0 = most urgent):
+
+| Priority | Meaning | Example |
+|----------|---------|---------|
+| `-p 0` | Critical | Production down, security issue |
+| `-p 1` | High | Blocking other work |
+| `-p 2` | Medium | Normal feature work (default) |
+| `-p 3` | Low | Nice to have |
+| `-p 4` | Backlog | Future consideration |
+
+```bash
+bd create "Security vulnerability" --type bug -p 0
+bd update AES-42 --priority 1  # Escalate priority
+bd list --priority-min 0 --priority-max 1  # Show P0-P1 only
+```
+
+### Issue Granularity
+
+Keep issues atomic and completable in a single focused session:
+- **Too big:** "Implement user authentication system"
+- **Right size:** "Add JWT token validation middleware"
+- **Right size:** "Create login API endpoint"
+- **Right size:** "Add password hashing utility"
+
+### Issue Dependencies
+
+Link related issues to build a dependency graph:
+
+```bash
+# Create a blocking dependency
+bd create "Fix database connection" --blocks AES-42
+
+# Create a child issue (subtask)
+bd create "Add input validation" --parent AES-40
+
+# Link discovered work to its origin
+bd create "Fix flaky test in auth" --discovered-from AES-42
+```
+
+### User-Requested Work During Sessions
+
+When the user requests new features, enhancements, or changes during an active session, **capture them as beads before implementing**:
+
+#### Recognition Triggers
+
+Create new beads when user requests contain:
+- New functionality ("add stacking", "implement X")
+- Enhancements to existing features ("update X to support Y")
+- Multiple distinct items ("do A and B")
+- Scope expansion beyond current issue
+
+#### Linking Strategy
+
+| Scenario | Flag | Example |
+|----------|------|---------|
+| Enhancement to in-progress work | `--parent <current-id>` | Stacking is child of power-up system |
+| Related but independent feature | `--discovered-from <current-id>` | Bug found while working |
+| Extends a closed issue | `--discovered-from <closed-id>` | New capability for shipped feature |
+| Completely new work | (no flag) | Unrelated feature request |
+
+#### Workflow
+
+1. **Pause implementation** - Don't start coding new requests immediately
+2. **Create bead(s)** - One per discrete piece of work
+3. **Link appropriately** - Use `--parent` or `--discovered-from`
+4. **Confirm with user** - Show created beads before proceeding
+5. **Mark in_progress** - Then begin implementation
+
+```bash
+# User asks: "update power-ups to support stacking with v1/v2/v3 levels"
+# While working on: aestroids-v2-sxk (power-up spawn system)
+
+bd create "Implement Shield stacking (v1/v2/v3)" --type feature --parent aestroids-v2-sxk
+bd create "Implement Rapid-fire stacking (v1/v2/v3)" --type feature --parent aestroids-v2-sxk
+```
+
+#### Exception: Trivial Changes
+
+Skip bead creation for:
+- Typo fixes
+- Minor tweaks ("make it blue instead of green")
+- Clarifications of existing issue scope
+
+### Labels
+
+Tag issues for filtering and organization:
+
+```bash
+bd create "Add dark mode" --type feature -l "frontend,ui"
+bd label add AES-42 "urgent" "needs-review"
+bd label remove AES-42 "urgent"
+bd list --label "frontend"           # Issues with this label
+bd list --label-any "frontend,backend"  # OR matching
+```
+
+### Issue Naming Convention
+
+Use clear, action-oriented titles:
+- `Implement [component/feature]`
+- `Add [functionality] to [area]`
+- `Fix [bug description]`
+- `Update [docs/config] for [change]`
+
+### View the Work Queue
+
+```bash
+bd list                    # All issues
+bd ready --json            # Unblocked work (structured)
+bd show <id>               # Issue details
+bd dep tree <id>           # View dependency graph
+```
+
+### Filtering Issues
+
+```bash
+bd list --status open --type bug       # Open bugs
+bd list --title-contains "auth"        # Search by title
+bd list --no-assignee                  # Unclaimed work
+bd list --created-after 2025-01-01     # Recent issues
+bd list --label "frontend" --priority-max 1  # Combine filters
+```
 
 ---
 
-## 5. Self-Optimization Routine (Required Default Behavior)
+## 3. Branching Strategy
 
-> This section describes the mandatory self-improvement process that occurs after every code generation or tool use action.
+All work is done on feature branches that are merged to `main` via pull request.
 
-After every code generation or tool use action you perform, you MUST follow this self-optimization routine:
+### Branch Naming Convention
+
+Create branches with a unique work ID and short description:
+
+```
+feature/<work-id>-<short-description>
+fix/<work-id>-<short-description>
+```
+
+Examples:
+- `feature/work-001-canvas-engine`
+- `fix/work-002-collision-bug`
+
+### Starting a Work Session
+
+1. **Create the work branch:**
+   ```bash
+   # Generate a unique work ID (use timestamp or sequential number)
+   WORK_ID="work-$(date +%Y%m%d-%H%M)"
+   git checkout -b feature/${WORK_ID}-<description>
+   ```
+
+2. **Associate beads issues with this branch:**
+   - Update issues to `in_progress` as you work on them
+   - Any new issues discovered during work are automatically linked via `--discovered-from`
+
+### During Development
+
+- Make atomic commits as work progresses
+- Reference beads issues in commit messages with `Closes: <issue-id>`
+- Create new beads issues for bugs/gaps discovered during development
+
+### Creating the Pull Request
+
+When the feature branch is ready for merge:
+
+1. **Push the branch:**
+   ```bash
+   git push -u origin <branch-name>
+   ```
+
+2. **Create PR with beads summary:**
+   ```bash
+   gh pr create --title "<type>: <description>" --body "$(cat <<'EOF'
+   ## Summary
+   <Brief description of changes>
+
+   ## Beads Covered
+   ### Planned Issues
+   - [x] `<issue-id>`: <issue title>
+   - [x] `<issue-id>`: <issue title>
+
+   ### Issues Created During Development
+   - [x] `<issue-id>`: <issue title> (bug fix)
+   - [x] `<issue-id>`: <issue title> (gap addressed)
+
+   ## Test Plan
+   - [ ] <test step>
+
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+   EOF
+   )"
+   ```
+
+3. **Request human review:** After creating the PR, always request human review before merging. **NEVER merge PRs to main without explicit human approval.**
+
+4. **Merge strategy:** Once approved, squash and merge to keep `main` history clean
+
+### PR Description Requirements
+
+Every PR MUST include:
+- **Beads Covered section** listing all issues addressed
+- **Planned Issues:** Original issues that motivated this work
+- **Created During Development:** New issues discovered and fixed during the branch
+- Each issue marked with completion status `[x]`
+
+---
+
+## 4. Execution Process
+
+Once the user approves the plan, execute work sequentially and autonomously.
+
+### Issue Statuses
+
+| Status | Meaning |
+|--------|---------|
+| `open` | Ready to start (default) |
+| `in_progress` | Currently being worked on |
+| `blocked` | Waiting on dependency or external factor |
+| `deferred` | Postponed for later |
+| `closed` | Completed |
+
+### Claim and Execute
+
+```bash
+bd update <id> --status in_progress
+# ... perform the work ...
+bd close <id>
+```
+
+### Handling Blocked Work
+
+If work is blocked by an external factor:
+
+```bash
+bd update AES-42 --status blocked
+bd comment AES-42 "Waiting on API team for endpoint spec"
+# Issue won't appear in `bd ready` until unblocked
+bd update AES-42 --status open  # Unblock when ready
+```
+
+### Reopening Closed Issues
+
+```bash
+bd reopen AES-42 --reason "Bug reappeared after deploy"
+```
+
+### During Execution
+
+- Execute each issue in logical order
+- Create commits as work progresses (see Section 6)
+- Close issues immediately upon completion
+- If blocked, set status to `blocked` and add a comment explaining why
+
+### Work Discovery
+
+When you discover unrelated issues during execution (broken tests, bugs, tech debt), **capture them immediately** rather than ignoring:
+
+```bash
+bd create "Fix broken auth tests" --discovered-from AES-42 --type bug
+bd create "Refactor duplicated validation logic" --discovered-from AES-42 --type enhancement
+```
+
+This ensures no discovered work is lost and creates an audit trail of how work unfolded.
+
+### On Failure
+
+If work fails:
+1. Do not close the issue
+2. Add context via `bd comment <id> "Error: [description]"`
+3. Create follow-up issues if needed
+4. Seek user guidance before continuing
+
+---
+
+## 5. Self-Optimization Routine
+
+After completing significant work, analyze if patterns should be captured.
 
 ### Analyze
-Briefly analyze the user's last action (e.g., did they correct your code, provide a clarification, rerun a command with a new flag?). Also, analyze the changes you just made to the filesystem.
+
+Review the work just completed:
+- Did the user correct your approach?
+- Did you discover undocumented conventions?
+- Did a command need extra flags?
+
+### Capture Follow-ups
+
+If you identify improvements or follow-up work:
+
+```bash
+bd create "Update [file] to document [pattern]" --type enhancement
+bd create "Add [convention] to project guidance" --type docs
+```
 
 ### Compare
-Compare this analysis against the current state of all .md context files (claude.md, prd.md, sbom.md, etc.).
+
+Check against current `.md` context files (AGENTS.md, workflow.md, etc.).
 
 ### Recommend
-If you identify a pattern of correction or a potential for future streamlining, recommend a specific, minimal edit to one of the .md files. For each recommendation, you MUST include:
-- **Proposed Change:** The exact text to be added, removed, or changed.
-- **Reasoning (Why):** A concise explanation of how this change will improve future interactions (e.g., "This adds the --fix flag to the lint command, which the user has added manually three times, saving a future step.").
-- **Risk / New Burden:** Any potential risks or new responsibilities this change introduces for the user.
 
-Please note, it is perfectly ok if you do NOT identify a pattern for improvement and no changes need to be made. We want to improve slowly and iteratively.
+If a documentation update is warranted, propose the specific edit:
+- **Proposed Change:** Exact text to add/remove/change
+- **Reasoning:** How this improves future interactions
+- **Risk:** Any new burden this introduces
 
-### Propose Diff
-If the user accepts the recommendation, propose the exact diff or patch to apply the change to the relevant .md file.
+It is perfectly acceptable to find no patterns worth capturing. Improve slowly and iteratively.
 
 ---
 
-## 6. Code Commit Workflow and Changelog Execution
+## 6. Code Commit Workflow
 
-When a step in the plan results in a code change, I will create a git commit.
+When work results in code changes:
 
-* **Commit Message Style:** Commit messages should follow the Conventional Commits format:  
-  https://www.conventionalcommits.org/en/v1.0.0/  
-  Example: `feat: add user login button`
-* **Changelog:** After a set of features is complete, I will update the `changelog.md` file.
+### Commit Message Style
+
+Follow Conventional Commits format:
+
+```
+feat: add user login button
+fix: resolve null pointer in auth handler
+docs: update API documentation for auth endpoints
+refactor: extract validation logic to shared module
+```
+
+### Link to Issues
+
+Reference the beads issue in commits when applicable:
+
+```bash
+git commit -m "feat: add login button
+
+Closes: AES-42"
+```
+
+### Sync with Git
+
+After completing work:
+
+```bash
+git add .
+git commit -m "feat: [description]"
+bd sync
+git push
+```
+
+### Changelog
+
+After completing a set of features, update `changelog.md`.
+
+---
+
+## 7. Multi-Agent Coordination (Optional)
+
+When running multiple agents on the same project, use these flags to prevent conflicts and maintain audit trails.
+
+### Actor Tracking
+
+Tag updates with an actor identifier for audit trails:
+
+```bash
+bd update AES-42 --status in_progress --actor "claude-session-1"
+bd close AES-42 --actor "claude-session-1"
+```
+
+This logs who/what made each change, useful for debugging and history.
+
+### Assignee Management
+
+Claim work to prevent other agents from picking it up:
+
+```bash
+# Claim work for this agent
+bd update AES-42 --status in_progress --assignee "agent-1"
+
+# See what's assigned to a specific agent
+bd list --assignee "agent-1"
+
+# Find unclaimed ready work
+bd ready --assignee ""
+```
+
+### Multi-Agent Workflow
+
+1. On startup, check for unclaimed work: `bd ready --assignee ""`
+2. Claim with both status and assignee: `bd update <id> --status in_progress --assignee "<agent-id>"`
+3. Tag all updates with `--actor` for traceability
+4. On completion, close with actor: `bd close <id> --actor "<agent-id>"`
+
+---
+
+## 8. Playwright Testing
+
+When testing features with Playwright, follow these conventions for traceability:
+
+### Screenshot Naming Convention
+
+Include the bead issue ID in screenshot filenames to track screenshots back to specific work items:
+
+```
+<bead-id>-<description>.png
+```
+
+Examples:
+- `AES-42-menu-screen.png`
+- `AES-43-ship-controls.png`
+- `AES-44-collision-gameover.png`
+
+### Testing Workflow
+
+1. **Before testing:** Ensure the dev server is running
+2. **Install browser if needed:** Use `browser_install` tool
+3. **Navigate to app:** Use `browser_navigate` to load the application
+4. **Take baseline screenshot:** Capture initial state with bead ID prefix
+5. **Test interactions:** Use keyboard/mouse tools to test functionality
+6. **Capture results:** Screenshot each significant state change
+7. **Close browser:** Clean up with `browser_close` when done
+
+### Screenshot Storage
+
+Screenshots are saved to `.playwright-mcp/` directory. Consider:
+- Adding `.playwright-mcp/` to `.gitignore` for temporary test screenshots
+- Moving important screenshots to a `docs/` or `tests/screenshots/` folder if they should be preserved
+
+---
+
+## 9. Session Completion
+
+Before ending a work session, complete ALL steps:
+
+1. **File issues** for any remaining or discovered work
+2. **Run quality gates** (tests, linters, builds) if code changed
+3. **Close completed issues** via `bd close <id>`
+4. **Push the feature branch:**
+   ```bash
+   git push -u origin <branch-name>
+   ```
+5. **Create PR if work is complete** (see Section 3: Branching Strategy)
+   - Include all beads covered in the PR description
+   - Distinguish planned issues from issues created during development
+6. **If work continues next session:**
+   - Leave branch open, push current state
+   - Document progress in commit messages
+7. **Hand off** - provide context for next session

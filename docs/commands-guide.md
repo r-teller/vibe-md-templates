@@ -29,8 +29,9 @@ Then add the command to your `.claude/commands/` directory.
 1. Checks if your dev server is running (and starts it if needed)
 2. Reviews git status and recent commits
 3. Loads all project context files (claude.md, prd.md, workflow.md, infra.md)
-4. Summarizes recent changelog entries and in-progress features
-5. Presents options for what to work on
+4. Checks beads (`bd ready`, `bd list`) for in-progress and pending issues
+5. Summarizes recent changelog entries
+6. Presents options for what to work on
 
 **Example usage:**
 
@@ -42,14 +43,15 @@ Then add the command to your `.claude/commands/` directory.
 
 ### `wrapup.md` - Session Wrap-up
 
-**Purpose:** Cleanly close a Claude Code session by committing changes, updating documentation, and creating a handoff for the next session.
+**Purpose:** Cleanly close a Claude Code session by committing changes, syncing beads, and creating a handoff for the next session.
 
 **What it does:**
 1. Commits any uncommitted changes
-2. Updates changelog and feature tracking files
-3. Runs build verification
-4. Provides a session summary (completed, in progress, blockers)
-5. Creates a handoff message for resuming work
+2. Updates beads issue statuses (`bd close`, `bd update`)
+3. Syncs beads with git (`bd sync`)
+4. Runs build verification
+5. Provides a session summary (completed, in progress, blockers)
+6. Pushes to remote and creates a handoff message
 
 **Example usage:**
 

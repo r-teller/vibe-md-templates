@@ -38,7 +38,7 @@ claude.md           ← Master control file (READ THIS FIRST)
 - When you add/remove template files
 - When you change the priority of different concerns
 - When you establish new global project rules
-- When introducing or updating feature-based workflow logic (`.claude/implementation/`, `features.json`)
+- When introducing or updating beads-based workflow logic
 
 **Example Use Case:**
 
@@ -52,7 +52,7 @@ claude.md           ← Master control file (READ THIS FIRST)
 
 ### `prd.md` - Product Requirements Document
 
-**Purpose:** Defines WHAT you're building and WHY, focusing on user experience and business value. Also serves as the origin point for defining **feature shortnames** tracked by the workflow system.
+**Purpose:** Defines WHAT you're building and WHY, focusing on user experience and business value. Also serves as the origin point for identifying **features** that will be tracked as beads issues.
 
 **Key Sections:**
 
@@ -66,7 +66,7 @@ claude.md           ← Master control file (READ THIS FIRST)
 - When changing target audience or scope
 - When updating UI/UX requirements
 - Before starting any new major feature
-- When refining feature shortnames used in `.claude/implementation/`
+- When identifying new features to track as beads issues
 
 **Best Practices:**
 
@@ -101,29 +101,30 @@ claude.md           ← Master control file (READ THIS FIRST)
 
 ### `workflow.md` - Development Workflow
 
-**Purpose:** Defines HOW you work - your development process, planning methodology, and quality standards.  
-It also governs **feature-based autonomous implementation** through `.claude/implementation/` and `features.json`.
+**Purpose:** Defines HOW you work - your development process, planning methodology, and quality standards.
+It also governs **beads-based issue tracking** using the `bd` CLI for work management.
 
 **Key Sections:**
 
-- **Plan Creation Process** - How `.claude/implementation/` and plan files (`plan.v1.json`, `plan.v2.json`, etc.) are structured
-- **Execution Logic** - How each plan is executed, tracked, and updated
-- **Quality Assurance** - Testing and validation after each feature plan step
+- **Session Startup** - How to orient with `bd ready`, `bd list`, and current work state
+- **Planning with Beads** - Issue creation, types, priorities, dependencies, and labels
+- **Branching Strategy** - Branch naming, PR workflows, and beads references in PRs
+- **Execution Process** - Status management (`open`, `in_progress`, `blocked`, `closed`)
 - **Self-Optimization** - How Claude Code improves its own planning or coding behavior
 
 **When to Update:**
 
 - When changing Git workflow or branching strategy
 - When updating code standards or review processes
-- When modifying plan structure, plan versioning, or feature execution rules
+- When modifying beads issue conventions or execution rules
 - After retrospectives or process improvements
-- When refining how `features.json` tracks feature states (`pending`, `in_progress`, `completed`)
+- When refining how issues transition between statuses
 
 **Best Practices:**
 
-- Keep plan version numbers and status updates consistent
-- Include clear rules for when features transition between states
-- Document changelog automation after plan completion
+- Keep issues atomic and completable in a single focused session
+- Use dependencies (`--blocks`, `--parent`) to manage work order
+- Reference beads issue IDs in commits and PR descriptions
 
 ---
 
@@ -203,8 +204,8 @@ It also governs **feature-based autonomous implementation** through `.claude/imp
 
 ### `changelog.md` - Version History
 
-**Purpose:** Tracks project evolution, maintains version history, and provides context for changes over time.  
-Each completed feature plan should automatically append an entry summarizing the implementation and plan version.
+**Purpose:** Tracks project evolution, maintains version history, and provides context for changes over time.
+Significant completed beads issues should be logged with their issue ID and summary.
 
 **Key Sections:**
 
@@ -216,7 +217,7 @@ Each completed feature plan should automatically append an entry summarizing the
 **When to Update:**
 
 - After every significant change or feature addition
-- After completing a workflow plan or updating a feature’s status
+- After completing beads issues or closing a set of related work
 - Before creating releases or deployments
 - When changing versioning strategy or release process
 - During project retrospectives
@@ -224,7 +225,7 @@ Each completed feature plan should automatically append an entry summarizing the
 **Best Practices:**
 
 - Follow semantic versioning (MAJOR.MINOR.PATCH)
-- Reference feature shortnames and plan versions in changelog entries
+- Reference beads issue IDs in changelog entries (e.g., `Closes: AES-42`)
 - Include both what changed and why it changed
 
 ---
@@ -239,21 +240,21 @@ When templates contain conflicting information, Claude Code follows this priorit
 2. **Runtime Environment** (`infra.md`) - Technical constraints
 3. **Global Conventions** (`claude.md`) - Project standards
 4. **Feature Requirements** (`prd.md`) - Business needs
-5. **Process & Workflow** (`workflow.md`) - Plan creation, version management, and execution logic
+5. **Process & Workflow** (`workflow.md`) - Beads issue management and execution logic
 
 ### Information Flow
 
 ```
 User Request → claude.md (routing) → Relevant templates
   ↓
-workflow.md → Plan creation (`features.json`, `.claude/implementation/{feature}/plan.v*.json`)
+workflow.md → Issue tracking with beads (`bd create`, `bd update`, `bd close`)
   ↓
 infra.md / security.md → Technical and safety validation
   ↓
 tests.md / changelog.md → Quality checks and update logs
 ```
 
-Claude Code reads `claude.md` first to understand which other templates are relevant, then consults those templates to assemble the full execution plan.
+Claude Code reads `claude.md` first to understand which other templates are relevant, then consults those templates to plan and execute work tracked via beads.
 
 ### Maintenance Cadence
 
