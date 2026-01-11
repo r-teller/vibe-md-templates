@@ -6,6 +6,23 @@ description: Start a new Claude Code session - load context, check git status, a
 
 Please perform the following startup tasks to begin this session:
 
+### 0. Status Line Check (First Time Only)
+
+Check if the context status line is configured by checking if `~/.claude/statusline.sh` exists.
+
+**If the file does NOT exist**, offer to set it up:
+
+"I noticed you don't have the context status line configured yet. This shows you real-time token usage at the bottom of your terminal, helping you stay aware of context limits before autocompact triggers.
+
+Would you like me to set it up now? (This is a one-time setup that works across all projects.)"
+
+- **If yes:** Follow the setup process from `/setup-statusline` (check for jq, create script, update settings.json)
+- **If no:** Continue with the session startup
+
+**If the file already exists**, skip this step silently and continue.
+
+---
+
 ### 1. Environment Setup
 - Check if your dev server is running (customize the port for your project)
 - If not running, start it in background (e.g., `npm run dev`, `python manage.py runserver`, etc.)

@@ -42,6 +42,19 @@ claude --version
 bd --version
 ```
 
+### Step 1.5: Set Up Context Status Line (Recommended)
+
+This one-time setup adds a persistent status bar showing your token usage. It helps you stay aware of context limits before autocompact triggers—essential for longer sessions.
+
+```bash
+# In Claude Code, run:
+/setup-statusline
+```
+
+Then restart Claude Code. You'll see a status bar at the bottom of your terminal. See [docs/statusline-guide.md](docs/statusline-guide.md) for details.
+
+> **Tip:** If you skip this step, the `/gogogo` command will offer to set it up for you later.
+
 ### Step 2: Set Up Your Project
 
 ```bash
@@ -88,9 +101,13 @@ Claude Code will walk you through customizing each template for your project.
 │   └── changelog.md    # Version history
 │
 ├── commands/           # Slash commands for Claude Code
-│   ├── gogogo.md       # /gogogo - Start a work session
-│   ├── wrapup.md       # /wrapup - End session, commit, sync
-│   └── story.md        # /story - Create a new user story
+│   ├── setup-statusline.md       # /setup-statusline - Configure context status bar
+│   ├── gogogo.md                 # /gogogo - Start a work session
+│   ├── wrapup.md                 # /wrapup - End session, commit, sync
+│   ├── story.md                  # /story - Create a new user story
+│   ├── create-prompt.md          # /create-prompt - Build effective prompts
+│   ├── create-research-prompt.md # /create-research-prompt - Build deep research prompts
+│   └── improve-prompt.md         # /improve-prompt - Fix and enhance existing prompts
 │
 ├── prompts/            # Interactive setup helpers
 │   ├── setup-project.prompt    # Full project setup wizard
@@ -98,6 +115,7 @@ Claude Code will walk you through customizing each template for your project.
 │   └── create-command.prompt   # Custom command creator
 │
 ├── docs/               # Detailed guides
+│   └── statusline-guide.md     # Context status line setup and customization
 └── examples/           # Sample project setups
     ├── web-app-example/
     └── cli-tool-example/
@@ -144,11 +162,24 @@ The `/gogogo` and `/wrapup` slash commands automatically check and update beads 
 
 After setup, use these commands in Claude Code:
 
+**Setup (One-Time):**
+| Command | What it does |
+|---------|--------------|
+| `/setup-statusline` | Configures the context usage status bar (run once) |
+
+**Session Management:**
 | Command | What it does |
 |---------|--------------|
 | `/gogogo` | Loads context, checks git status, shows ready work items |
 | `/wrapup` | Commits changes, updates beads, creates handoff notes |
 | `/story` | Creates a new user story in your PRD |
+
+**Prompt Engineering:**
+| Command | What it does |
+|---------|--------------|
+| `/create-prompt` | Builds a comprehensive prompt from a basic idea |
+| `/create-research-prompt` | Builds a prompt optimized for deep research tasks |
+| `/improve-prompt` | Reviews and improves an existing prompt |
 
 ---
 
@@ -221,6 +252,93 @@ See the [Beads documentation](https://github.com/steveyegge/beads) for the full 
 - Document endpoints in `prd.md`
 - Emphasize rate limiting and auth in `security.md`
 - Detail scaling requirements in `infra.md`
+
+---
+
+## Prompt Engineering Commands
+
+As you build software with Claude Code, you'll often need to create prompts—instructions that tell AI what to do. Well-crafted prompts get dramatically better results than vague ones. These commands help you write better prompts without needing to be a prompt engineering expert.
+
+### Why Prompts Matter
+
+Think of a prompt like giving directions. "Go to the store" might work, but "Drive to the Safeway on 5th Street, park in the back lot, and pick up milk and eggs" gets exactly what you need. The same applies to AI:
+
+- **Vague prompt:** "Write me a blog post about productivity"
+- **Better prompt:** "You are a productivity coach for busy professionals. Write a 500-word blog post about time-blocking, targeting remote workers who struggle with distractions. Use a friendly, actionable tone with 3 concrete tips."
+
+The second prompt gives the AI a role, context, audience, format, and tone—and produces far better results.
+
+### The R.G.C.O.A. Framework
+
+All three prompt commands use the **R.G.C.O.A. framework** to ensure your prompts have everything they need:
+
+| Component | What it does | Example |
+|-----------|--------------|---------|
+| **R**ole | Who should the AI act as? | "You are a senior security engineer..." |
+| **G**oal | What should it accomplish? | "Review this code for vulnerabilities..." |
+| **C**ontext | What background does it need? | "This is a payment processing API..." |
+| **O**utput | What format should the response take? | "Provide a numbered list of issues..." |
+| **A**sk (Refinement) | Let the AI ask clarifying questions | "If anything is unclear, ask before proceeding." |
+
+You don't need to memorize this—the commands guide you through it conversationally.
+
+### `/create-prompt` — Build New Prompts
+
+**When to use it:** You have a rough idea of what you want to ask an AI to do, but you're not sure how to phrase it effectively.
+
+**How it works:**
+1. You describe your basic idea (e.g., "help me write better error messages")
+2. Claude asks targeted questions to fill in the gaps
+3. You get a complete, well-structured prompt ready to use
+
+**Example:**
+```
+/create-prompt help me write a prompt for code review
+```
+
+Claude will ask things like: "Who's the target audience—junior developers or the whole team? Should it focus on security, performance, or general quality?" Then it builds the complete prompt for you.
+
+### `/create-research-prompt` — Build Deep Research Prompts
+
+**When to use it:** You need to research a topic thoroughly—competitive analysis, technical deep-dives, market research, etc.
+
+**Why it's different:** Research prompts need additional structure:
+- **Scope:** What time period? What sources? What depth?
+- **Exclusions:** What should be avoided? (outdated info, certain sources)
+- **Uncertainty handling:** How should the AI flag things it's not confident about?
+
+**Example:**
+```
+/create-research-prompt competitive analysis of AI coding assistants
+```
+
+Claude will ask about your research timeframe, preferred sources, what you already know (to avoid redundancy), and how you want findings organized.
+
+### `/improve-prompt` — Fix Existing Prompts
+
+**When to use it:** You have a prompt that's not working well. Maybe the AI gives irrelevant answers, wrong format, or misses the point.
+
+**How it works:**
+1. Share the prompt that's not working (paste it or point to a file)
+2. Describe what's going wrong
+3. Claude analyzes the issue and applies targeted fixes
+4. You get an improved version with explanations of what changed
+
+**Example:**
+```
+/improve-prompt
+```
+
+Then paste your broken prompt and say "it keeps giving me generic responses instead of specific recommendations." Claude will identify what's missing and fix it.
+
+### Context-Aware Intelligence
+
+These commands are smart about context. If you've been discussing a project, Claude already knows:
+- What you're building (from conversation or your `.claude/prd.md`)
+- Who your users are
+- What problems you're solving
+
+So instead of asking you 10 questions, it might say: "Based on our discussion about your developer tool, I'm assuming the audience is software engineers and the tone should be technical but approachable. Is that right?" Then it only asks about what it doesn't know.
 
 ---
 
