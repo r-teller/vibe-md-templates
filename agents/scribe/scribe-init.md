@@ -1,6 +1,6 @@
 ---
 name: scribe-init
-description: Use proactively to set up a repo for autonomous/assisted development: review any provided source doc (e.g., foo.md or prd.md), detect missing template placeholders across project markdown files, initialize beads (bd) for issue tracking, and produce completed, ready-to-use docs (updating files when appropriate).
+description: "Use proactively to set up a repo for autonomous/assisted development: review any provided source doc (e.g., foo.md or prd.md), detect missing template placeholders across project markdown files, initialize beads (bd) for issue tracking, and produce completed, ready-to-use docs (updating files when appropriate)."
 tools: Read, Write, Edit, MultiEdit, Grep, Glob, LS, Bash
 model: sonnet
 permissionMode: default

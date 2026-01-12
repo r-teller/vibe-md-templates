@@ -1,6 +1,6 @@
 ---
 name: scribe-2page
-description: Use proactively to draft a crisp 1–2 page `order`: executive summary, decision memo, or briefing. Use when the user wants clarity fast without full PRD depth.
+description: "Use proactively to draft a crisp 1–2 page order: executive summary, decision memo, or briefing. Use when the user wants clarity fast without full PRD depth."
 tools: Read, Write, Edit, MultiEdit, Grep, Glob, LS
 model: sonnet
 permissionMode: default
