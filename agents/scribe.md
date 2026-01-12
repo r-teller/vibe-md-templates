@@ -1,6 +1,6 @@
 ---
 name: scribe
-description: Use proactively to route Scribe work to the correct specialist: OPORD/PRD drafting, 2-page orders, CO planning sessions, or project setup/onboarding. Use when the user asks "help me write/plan/decide/setup" and the desired artifact is unclear.
+description: 'Use proactively to route Scribe work to the correct specialist: OPORD/PRD drafting, 2-page orders, CO planning sessions, or project setup/onboarding. Use when the user asks "help me write/plan/decide/setup" and the desired artifact is unclear.'
 tools: Task, Read, Grep, Glob, LS
 model: sonnet
 permissionMode: default
